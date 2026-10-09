@@ -49,38 +49,15 @@
             </div>
           </div>
 
-          <!-- Section: Folders / Koleksi -->
+          <!-- Section 1: Pintasan / Smart Views (Apple Style Quick Access) -->
           <div class="sidebar-section">
             <div class="section-title-row">
-              <span class="section-title">Koleksi Folder</span>
-              <button class="btn-icon-tiny" id="btnOpenNewFolderModal" title="Tambah Folder Baru">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-              </button>
-            </div>
-            <nav class="folder-list" id="folderList">
-              <!-- Rendered via JS -->
-            </nav>
-            <button class="btn-new-folder-action" id="btnNewFolderInline">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              <span>Folder Baru</span>
-            </button>
-          </div>
-
-          <!-- Section: Smart Filters -->
-          <div class="sidebar-section">
-            <div class="section-title-row">
-              <span class="section-title">Filter Pintar</span>
+              <span class="section-title">Pintasan</span>
             </div>
             <nav class="smart-filter-list" id="smartFilterList">
               <button class="folder-item smart-item active" data-filter="all">
                 <div class="folder-item-left">
-                  <span>📂</span>
+                  <span>📝</span>
                   <span class="folder-name-text">Semua Catatan</span>
                 </div>
                 <span class="folder-badge" id="badgeAllCount">0</span>
@@ -100,6 +77,29 @@
                 <span class="folder-badge" id="badgeTodoCount">0</span>
               </button>
             </nav>
+          </div>
+
+          <!-- Section 2: Folder & Projek (Default 'Catatan' + User Custom Projects) -->
+          <div class="sidebar-section">
+            <div class="section-title-row">
+              <span class="section-title">Folder &amp; Projek</span>
+              <button class="btn-icon-tiny" id="btnOpenNewFolderModal" title="Tambah Projek / Folder Baru">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+            <nav class="folder-list" id="folderList">
+              <!-- Rendered via JS: 📁 Catatan (default) + user-created projects -->
+            </nav>
+            <button class="btn-new-folder-action" id="btnNewFolderInline">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>+ Projek / Folder Baru</span>
+            </button>
           </div>
 
           <!-- Section: Pudding Mood Flavors (Ciri Khas Unik!) -->
@@ -330,25 +330,27 @@
 
       </div>
 
-      <!-- NEW FOLDER MODAL -->
+      <!-- NEW FOLDER / PROJEK MODAL -->
       <div class="apple-modal-overlay" id="folderModal">
         <div class="apple-modal frosted">
           <div class="modal-header">
-            <h3>Buat Folder Baru</h3>
+            <h3>Buat Projek / Folder Baru</h3>
             <button class="modal-close" id="btnFolderModalClose">&times;</button>
           </div>
           <div class="modal-body">
-            <p>Kelompokkan catatan berdasarkan proyek atau kategori:</p>
+            <p>Kelompokkan catatan berdasarkan proyek atau kategori kerja:</p>
             <div class="form-group">
-              <label for="newFolderNameInput">Nama Folder</label>
-              <input type="text" class="apple-text-input" id="newFolderNameInput" placeholder="Contoh: Kuliah, Resep, Keuangan..." maxlength="24" />
+              <label for="newFolderNameInput">Nama Projek / Folder</label>
+              <input type="text" class="apple-text-input" id="newFolderNameInput" placeholder="Contoh: Projek Web, Kuliah, Skripsi..." maxlength="24" />
             </div>
             <div class="form-group">
               <label>Pilih Ikon Emoji</label>
               <div class="emoji-picker-row" id="emojiPickerRow">
                 <button type="button" class="emoji-btn active" data-emoji="📁">📁</button>
-                <button type="button" class="emoji-btn" data-emoji="🎓">🎓</button>
+                <button type="button" class="emoji-btn" data-emoji="💼">💼</button>
                 <button type="button" class="emoji-btn" data-emoji="🚀">🚀</button>
+                <button type="button" class="emoji-btn" data-emoji="💡">💡</button>
+                <button type="button" class="emoji-btn" data-emoji="🎓">🎓</button>
                 <button type="button" class="emoji-btn" data-emoji="💰">💰</button>
                 <button type="button" class="emoji-btn" data-emoji="🎨">🎨</button>
                 <button type="button" class="emoji-btn" data-emoji="📖">📖</button>
@@ -358,7 +360,7 @@
             </div>
             <div class="modal-buttons-row">
               <button class="btn-apple-secondary" id="btnCancelFolder">Batal</button>
-              <button class="btn-apple-primary" id="btnConfirmFolder">Simpan Folder</button>
+              <button class="btn-apple-primary" id="btnConfirmFolder">Simpan Projek</button>
             </div>
           </div>
         </div>

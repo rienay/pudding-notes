@@ -104,10 +104,7 @@ const sfx = new SoundFX();
 // 2. INITIAL SEED DATA
 // =============================================================================
 const DEFAULT_FOLDERS = [
-  { id: 'all', name: 'Semua Catatan', icon: '📝', isDefault: true },
-  { id: 'work', name: 'Pekerjaan', icon: '💼', isDefault: true },
-  { id: 'personal', name: 'Pribadi', icon: '👤', isDefault: true },
-  { id: 'ideas', name: 'Ide & Desain', icon: '💡', isDefault: true }
+  { id: 'notes', name: 'Catatan', icon: '📁', isDefault: true }
 ];
 
 const INITIAL_NOTES = [
@@ -115,7 +112,7 @@ const INITIAL_NOTES = [
     id: 'note-1',
     title: 'Selamat Datang di Pudding Notes 🍮✨',
     body: '<div><b>Pudding Notes</b> kini dilengkapi 4 ciri khas unik yang membedakannya dari aplikasi lain:</div><br><div>1. <b>Varian Rasa Pudding</b> di sidebar: Caramel 🍮, Matcha 🍵, Berry 🍓, dan Dark Choco 🍫.</div><div>2. <b>Fisika Pudding Bounce</b>: Coba centang tugas di bawah ini untuk melihat efek pantulan jeli yang memuaskan!</div><div>3. <b>Circular Progress Ring</b>: Lingkaran progress & bar yang terisi mulus secara visual.</div><div>4. <b>Focus / Zen Mode</b>: Tekan ikon expand di pojok kanan atas untuk menulis tanpa distraksi!</div>',
-    folder: 'ideas',
+    folder: 'notes',
     pinned: true,
     checklist: [
       { id: 'c1', text: 'Coba ganti rasa pudding di menu sidebar (Caramel, Matcha, Berry, Choco)', done: true },
@@ -130,7 +127,7 @@ const INITIAL_NOTES = [
     id: 'note-2',
     title: 'Rencana Peluncuran Web ke Vercel 🚀',
     body: '<div>Checklist kesiapan deployment ke Vercel untuk aplikasi modern:</div><br><div>1. Pastikan build artifact berjalan tanpa warning.</div><div>2. Uji responsivitas di layar iPhone &amp; tablet.</div><div>3. Cek kembali kontras warna dan tipografi.</div>',
-    folder: 'work',
+    folder: 'notes',
     pinned: true,
     checklist: [
       { id: 'c5', text: 'Setup file vercel.json untuk routing statis Vite', done: true },
@@ -144,7 +141,7 @@ const INITIAL_NOTES = [
     id: 'note-3',
     title: 'Daftar Belanja Kebutuhan Mingguan 🛒',
     body: '<div>Bahan-bahan kopi dan camilan untuk workspace meja kerja:</div>',
-    folder: 'personal',
+    folder: 'notes',
     pinned: false,
     checklist: [
       { id: 'c8', text: 'Biji Kopi Arabika Specialty 250g', done: false },
@@ -182,7 +179,14 @@ class AppState {
     const raw = localStorage.getItem('inotes_folders');
     if (raw) {
       try {
-        return JSON.parse(raw);
+        let list = JSON.parse(raw);
+        // Remove legacy 'all' or obsolete dummy placeholders (work, personal, ideas)
+        list = list.filter(f => f.id !== 'all' && f.id !== 'work' && f.id !== 'personal' && f.id !== 'ideas');
+        const hasNotes = list.some(f => f.id === 'notes');
+        if (!hasNotes) {
+          list.unshift({ id: 'notes', name: 'Catatan', icon: '📁', isDefault: true });
+        }
+        return list;
       } catch {
         return DEFAULT_FOLDERS;
       }
@@ -198,7 +202,14 @@ class AppState {
     const raw = localStorage.getItem('inotes_data');
     if (raw) {
       try {
-        return JSON.parse(raw);
+        const notes = JSON.parse(raw);
+        // Migrate legacy folder assignments to 'notes'
+        notes.forEach(n => {
+          if (!n.folder || n.folder === 'all' || n.folder === 'work' || n.folder === 'personal' || n.folder === 'ideas') {
+            n.folder = 'notes';
+          }
+        });
+        return notes;
       } catch {
         return INITIAL_NOTES;
       }
@@ -219,7 +230,8 @@ class AppState {
       if (this.smartFilter === 'pinned' && !note.pinned) return false;
       if (this.smartFilter === 'todo' && (!note.checklist || note.checklist.length === 0)) return false;
 
-      if (this.currentFolder !== 'all' && note.folder !== this.currentFolder) {
+      // When smart filter is 'all', apply folder filter if not viewing 'all'
+      if (this.smartFilter === 'all' && this.currentFolder !== 'all' && note.folder !== this.currentFolder) {
         return false;
       }
 
@@ -490,22 +502,58 @@ function renderSidebar() {
   folderList.innerHTML = '';
   
   state.folders.forEach(folder => {
-    const count = folder.id === 'all' 
-      ? state.notes.length 
-      : state.notes.filter(n => n.folder === folder.id).length;
+    const count = state.notes.filter(n => n.folder === folder.id).length;
 
     const btn = document.createElement('button');
     const isFolderActive = state.currentFolder === folder.id && state.smartFilter === 'all';
     btn.className = `folder-item ${isFolderActive ? 'active' : ''}`;
+
+    const canDelete = !folder.isDefault;
+    const deleteBtnHtml = canDelete 
+      ? `<span class="btn-folder-delete" title="Hapus Projek / Folder">✕</span>` 
+      : '';
+
     btn.innerHTML = `
       <div class="folder-item-left">
         <span>${folder.icon}</span>
         <span class="folder-name-text">${escapeHtml(folder.name)}</span>
       </div>
-      <span class="folder-badge">${count}</span>
+      <div class="folder-item-right">
+        <span class="folder-badge">${count}</span>
+        ${deleteBtnHtml}
+      </div>
     `;
 
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      // If user clicked delete folder button
+      if (e.target.closest('.btn-folder-delete')) {
+        e.stopPropagation();
+        showAppleAlert({
+          icon: '📁',
+          title: 'Hapus Folder / Projek?',
+          message: `Folder "${folder.name}" akan dihapus. Semua catatan di dalamnya tetap aman dan dipindahkan ke folder "Catatan".`,
+          confirmText: 'Hapus Projek',
+          onConfirm: () => {
+            state.notes.forEach(n => {
+              if (n.folder === folder.id) n.folder = 'notes';
+            });
+            state.folders = state.folders.filter(f => f.id !== folder.id);
+            if (state.currentFolder === folder.id) {
+              state.currentFolder = 'notes';
+              currentFolderTitle.textContent = 'Catatan';
+            }
+            state.saveFolders();
+            state.saveNotes();
+            sfx.playPop(500, 0.05);
+            renderSidebar();
+            renderNotesList();
+            renderEditor();
+            showToast(`Projek "${folder.name}" dihapus 📂`);
+          }
+        });
+        return;
+      }
+
       sfx.playPop(800, 0.03);
       state.currentFolder = folder.id;
       state.smartFilter = 'all';
@@ -517,20 +565,25 @@ function renderSidebar() {
     folderList.appendChild(btn);
   });
 
+  const allCount = state.notes.length;
   const pinnedCount = state.notes.filter(n => n.pinned).length;
   const todoCount = state.notes.filter(n => n.checklist && n.checklist.length > 0).length;
 
-  badgeAllCount.textContent = state.notes.length;
+  badgeAllCount.textContent = allCount;
   badgePinnedCount.textContent = pinnedCount;
   badgeTodoCount.textContent = todoCount;
 
   smartFilterList.querySelectorAll('.smart-item').forEach(btn => {
     const filter = btn.dataset.filter;
-    btn.classList.toggle('active', state.smartFilter === filter && state.currentFolder === 'all');
+    if (filter === 'all') {
+      btn.classList.toggle('active', state.currentFolder === 'all' && state.smartFilter === 'all');
+    } else {
+      btn.classList.toggle('active', state.smartFilter === filter);
+    }
   });
 
   noteFolderSelect.innerHTML = '';
-  state.folders.filter(f => f.id !== 'all').forEach(f => {
+  state.folders.forEach(f => {
     const opt = document.createElement('option');
     opt.value = f.id;
     opt.textContent = `${f.icon} ${f.name}`;
@@ -1026,9 +1079,15 @@ noteBodyEditor.addEventListener('paste', (e) => {
 function createNewNote() {
   sfx.playPop(1100, 0.05);
   const now = Date.now();
-  const targetFolder = state.currentFolder === 'all' 
-    ? (state.folders[1]?.id || 'personal') 
+  
+  // If user is inside a specific folder, save note there.
+  // If in 'all' view or smart filter, default to 'notes' (or first folder).
+  const targetFolder = (state.currentFolder === 'all' || !state.folders.some(f => f.id === state.currentFolder))
+    ? (state.folders[0]?.id || 'notes') 
     : state.currentFolder;
+
+  // Reset smart filter to 'all' so new note is immediately visible in the active list
+  state.smartFilter = 'all';
 
   const newNote = {
     id: 'note_' + now,
@@ -1044,6 +1103,13 @@ function createNewNote() {
   state.notes.unshift(newNote);
   state.activeNoteId = newNote.id;
   state.saveNotes();
+
+  if (state.currentFolder === 'all') {
+    currentFolderTitle.textContent = 'Semua Catatan';
+  } else {
+    const f = state.folders.find(x => x.id === state.currentFolder);
+    if (f) currentFolderTitle.textContent = f.name;
+  }
 
   renderSidebar();
   renderNotesList();
@@ -1138,7 +1204,7 @@ btnConfirmFolder.addEventListener('click', () => {
   sfx.playCheck();
   renderSidebar();
   renderNotesList();
-  showToast(`Folder "${name}" dibuat! 📂`);
+  showToast(`Projek "${name}" dibuat! 📂`);
 });
 
 btnCancelFolder.addEventListener('click', () => {
@@ -1156,9 +1222,48 @@ btnNewFolderInline.addEventListener('click', openFolderModal);
 // 10. EVENT LISTENERS & SHORTCUTS
 // =============================================================================
 
-noteTitleInput.addEventListener('input', triggerAutoSave);
-noteBodyEditor.addEventListener('input', triggerAutoSave);
-noteFolderSelect.addEventListener('change', triggerAutoSave);
+noteTitleInput.addEventListener('input', () => {
+  const note = state.getActiveNote();
+  if (!note) return;
+  const val = noteTitleInput.value.trim() || 'Catatan Baru';
+  note.title = val;
+
+  // Immediate character-by-character live update on active note card
+  const activeTitle = notesListContainer.querySelector('.note-card.active .card-title');
+  if (activeTitle) {
+    activeTitle.textContent = val;
+  }
+  triggerAutoSave();
+});
+
+noteBodyEditor.addEventListener('input', () => {
+  const note = state.getActiveNote();
+  if (!note) return;
+  note.body = noteBodyEditor.innerHTML;
+
+  // Immediate character-by-character live snippet update on active note card
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = note.body;
+  const plainText = (tempDiv.textContent || tempDiv.innerText || 'Belum ada isi catatan...').trim();
+
+  const activeSnippet = notesListContainer.querySelector('.note-card.active .card-snippet');
+  if (activeSnippet) {
+    activeSnippet.textContent = plainText;
+  }
+  updateWordCount();
+  triggerAutoSave();
+});
+
+noteFolderSelect.addEventListener('change', () => {
+  const note = state.getActiveNote();
+  if (!note) return;
+  note.folder = noteFolderSelect.value;
+  triggerAutoSave();
+  renderSidebar();
+  renderNotesList();
+  const folderObj = state.folders.find(f => f.id === note.folder);
+  showToast(`Dipindahkan ke ${folderObj ? folderObj.name : 'folder'} 📂`);
+});
 
 btnNewNote.addEventListener('click', createNewNote);
 btnPinNote.addEventListener('click', togglePinNote);
