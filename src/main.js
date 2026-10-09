@@ -281,6 +281,8 @@ const notesListContainer = document.getElementById('notesListContainer');
 
 // Editor Elements
 const btnMobileBack = document.getElementById('btnMobileBack');
+const btnSaveNote = document.getElementById('btnSaveNote');
+const saveBtnText = document.getElementById('saveBtnText');
 const saveStatus = document.getElementById('saveStatus');
 const editorToolbar = document.getElementById('editorToolbar');
 const btnToggleZen = document.getElementById('btnToggleZen');
@@ -947,6 +949,9 @@ function triggerAutoSave() {
 
   saveStatus.classList.add('saving');
   saveStatus.querySelector('.status-text').textContent = 'Menyimpan...';
+  if (btnSaveNote) {
+    btnSaveNote.classList.add('unsaved');
+  }
 
   clearTimeout(state.saveTimeout);
   state.saveTimeout = setTimeout(() => {
@@ -962,7 +967,43 @@ function triggerAutoSave() {
     updateWordCount();
     renderNotesList();
     renderSidebar();
+
+    if (btnSaveNote) {
+      btnSaveNote.classList.remove('unsaved');
+    }
   }, 350);
+}
+
+function saveCurrentNoteImmediately() {
+  const note = state.getActiveNote();
+  if (!note) return;
+
+  clearTimeout(state.saveTimeout);
+  note.title = noteTitleInput.value.trim() || 'Catatan Baru';
+  note.body = noteBodyEditor.innerHTML;
+  note.folder = noteFolderSelect.value;
+  note.updatedAt = Date.now();
+
+  state.saveNotes();
+  saveStatus.classList.remove('saving');
+  saveStatus.querySelector('.status-text').textContent = 'Tersimpan';
+  noteDateMeta.textContent = `Diedit ${formatDate(note.updatedAt)}`;
+  updateWordCount();
+  renderNotesList();
+  renderSidebar();
+
+  if (btnSaveNote) {
+    btnSaveNote.classList.remove('unsaved');
+    btnSaveNote.classList.add('just-saved', 'pudding-bounce');
+    if (saveBtnText) saveBtnText.textContent = 'Tersimpan ✓';
+    setTimeout(() => {
+      btnSaveNote.classList.remove('just-saved', 'pudding-bounce');
+      if (saveBtnText) saveBtnText.textContent = 'Simpan';
+    }, 1500);
+  }
+
+  sfx.playCheck();
+  showToast('Catatan berhasil disimpan! 💾');
 }
 
 noteTitleInput.addEventListener('keydown', (e) => {
@@ -1267,8 +1308,19 @@ btnPrintNote.addEventListener('click', () => {
   window.print();
 });
 
+if (btnSaveNote) {
+  btnSaveNote.addEventListener('click', saveCurrentNoteImmediately);
+}
+
 // Keyboard Shortcuts
 window.addEventListener('keydown', (e) => {
+  // Ctrl+S or Cmd+S: Save Note
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+    e.preventDefault();
+    saveCurrentNoteImmediately();
+    return;
+  }
+
   // Esc: Exit Zen mode or close modals
   if (e.key === 'Escape') {
     if (state.isZenMode) {
