@@ -1,45 +1,43 @@
 /* ==========================================================================
-   iNotes — Authentic Apple macOS & iOS Design System
-   Philosophy: Refined minimalism, champagne/amber accents, flawless contrast
+   iNotes — Authentic Apple macOS & iOS Design System (Pixel-Perfect Polish)
    ========================================================================== */
 
 :root {
   /* ========================================================================
      DARK MODE (macOS Sequoia Dark Default)
      ======================================================================== */
-  --bg-app: #141416;
-  --sidebar-bg: #1a1a1c;
-  --notes-bg: #1f1f22;
-  --editor-bg: #161618;
+  --bg-app: #121214;
+  --sidebar-bg: #18181a;
+  --notes-bg: #1d1d20;
+  --editor-bg: #141416;
   
-  --card-bg: #28282b;
-  --card-hover: #323236;
-  --card-border: rgba(255, 255, 255, 0.08);
-  --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  --card-bg: #262629;
+  --card-hover: #2f2f33;
+  --card-border: rgba(255, 255, 255, 0.07);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 
-  /* Apple Notes Active Selected Card (Warm subtle amber tint) */
   --card-selected-bg: rgba(245, 166, 35, 0.12);
   --card-selected-border: rgba(245, 166, 35, 0.45);
-  --card-selected-shadow: 0 2px 8px rgba(245, 166, 35, 0.15);
+  --card-selected-shadow: 0 2px 8px rgba(245, 166, 35, 0.14);
 
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.14);
 
   --text-primary: #f5f5f7;
-  --text-secondary: #a1a1a6;
-  --text-tertiary: #6e6e73;
+  --text-secondary: #98989d;
+  --text-tertiary: #636366;
 
   /* Signature Apple Notes Amber / Gold */
   --accent-gold: #f5a623;
   --accent-gold-hover: #e59819;
-  --accent-gold-soft: rgba(245, 166, 35, 0.16);
+  --accent-gold-soft: rgba(245, 166, 35, 0.15);
   --accent-gold-glow: rgba(245, 166, 35, 0.25);
 
   --danger: #ff453a;
   --danger-hover: #e03227;
-  --danger-soft: rgba(255, 69, 58, 0.16);
+  --danger-soft: rgba(255, 69, 58, 0.15);
   --success: #32d74b;
-  --success-soft: rgba(50, 215, 75, 0.16);
+  --success-soft: rgba(50, 215, 75, 0.15);
 
   /* Window dots */
   --dot-close: #ff5f56;
@@ -49,31 +47,30 @@
   /* Spring timings */
   --spring-snappy: cubic-bezier(0.16, 1, 0.3, 1);
   --spring-bounce: cubic-bezier(0.34, 1.45, 0.64, 1);
-  --speed-fast: 160ms;
-  --speed-normal: 260ms;
+  --speed-fast: 150ms;
+  --speed-normal: 250ms;
 }
 
 /* ==========================================================================
-   LIGHT MODE (Authentic macOS Notes — Crisp, Premium, Warm)
-   ========================================================================== */
+   LIGHT MODE (macOS Sequoia Light Clean Notes)
+   ======================================================================== */
 [data-theme="light"] {
   --bg-app: #f2f2f7;
   --sidebar-bg: #f8f8fa;
-  --notes-bg: #f3f3f6;
+  --notes-bg: #f2f2f5;
   --editor-bg: #ffffff;
 
   --card-bg: #ffffff;
   --card-hover: #f9f9fb;
-  --card-border: rgba(0, 0, 0, 0.08);
+  --card-border: rgba(0, 0, 0, 0.07);
   --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
 
-  /* Authentic Apple Notes Selected Note (Soft champagne warmth) */
   --card-selected-bg: #fff9ed;
   --card-selected-border: rgba(228, 163, 44, 0.5);
   --card-selected-shadow: 0 2px 8px rgba(228, 163, 44, 0.12);
 
-  --border-subtle: rgba(0, 0, 0, 0.08);
-  --border-strong: rgba(0, 0, 0, 0.14);
+  --border-subtle: rgba(0, 0, 0, 0.07);
+  --border-strong: rgba(0, 0, 0, 0.12);
 
   --text-primary: #1d1d1f;
   --text-secondary: #6e6e73;
@@ -115,7 +112,7 @@ html, body {
   filter: blur(140px);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.2;
+  opacity: 0.16;
   transition: opacity 0.5s ease;
 }
 
@@ -150,23 +147,29 @@ html, body {
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: 240px 350px 1fr;
+  grid-template-columns: 220px 320px 1fr;
   transition: grid-template-columns var(--speed-normal) var(--spring-snappy);
 }
 
 .split-view.sidebar-collapsed {
-  grid-template-columns: 0px 350px 1fr;
+  grid-template-columns: 0px 320px 1fr;
+}
+
+/* Frosted glass backdrop */
+.frosted {
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
 }
 
 /* ==========================================================================
-   COLUMN 1: SIDEBAR (Folders & Settings)
+   COLUMN 1: SIDEBAR
    ========================================================================== */
 .sidebar {
   background: var(--sidebar-bg);
   border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
-  padding: 16px 14px;
+  padding: 14px 12px;
   overflow-y: auto;
   overflow-x: hidden;
   white-space: nowrap;
@@ -174,18 +177,19 @@ html, body {
 }
 
 .sidebar-header {
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 22px;
-  padding-bottom: 12px;
+  margin-bottom: 16px;
+  padding: 0 4px 10px 4px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
 .window-controls {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .dot {
@@ -204,41 +208,41 @@ html, body {
 .brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .apple-badge {
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
   background: linear-gradient(135deg, #f5a623 0%, #e09212 100%);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(245, 166, 35, 0.3);
+  box-shadow: 0 2px 5px rgba(245, 166, 35, 0.25);
 }
 
 .brand-text {
   font-weight: 700;
-  font-size: 14.5px;
+  font-size: 13.5px;
   letter-spacing: -0.3px;
   color: var(--text-primary);
 }
 
 .sidebar-section {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .section-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 6px 8px 6px;
+  padding: 0 6px 6px 6px;
 }
 
 .section-title {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.6px;
@@ -246,9 +250,9 @@ html, body {
 }
 
 .btn-icon-tiny {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
   border: none;
   background: transparent;
   color: var(--text-secondary);
@@ -264,7 +268,7 @@ html, body {
   color: var(--text-primary);
 }
 
-.folder-list {
+.folder-list, .smart-filter-list {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -274,9 +278,9 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 7px 10px;
-  border-radius: 8px;
-  font-size: 13px;
+  padding: 6px 8px;
+  border-radius: 7px;
+  font-size: 12.5px;
   font-weight: 500;
   color: var(--text-secondary);
   cursor: pointer;
@@ -301,7 +305,7 @@ html, body {
 .folder-item-left {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   overflow: hidden;
 }
 
@@ -312,9 +316,9 @@ html, body {
 }
 
 .folder-badge {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 500;
-  padding: 1px 7px;
+  padding: 1px 6px;
   border-radius: 10px;
   background: rgba(128, 128, 128, 0.12);
   color: var(--text-secondary);
@@ -329,13 +333,13 @@ html, body {
 
 .btn-new-folder-action {
   width: 100%;
-  margin-top: 6px;
-  padding: 6px 10px;
-  border-radius: 8px;
+  margin-top: 5px;
+  padding: 5px 8px;
+  border-radius: 7px;
   border: 1px dashed var(--border-subtle);
   background: transparent;
   color: var(--text-tertiary);
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -350,45 +354,13 @@ html, body {
   background: var(--accent-gold-soft);
 }
 
-/* Tag Pills */
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 0 2px;
-}
-
-.tag-pill {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11.5px;
-  font-weight: 500;
-  background: transparent;
-  border: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all var(--speed-fast) var(--spring-snappy);
-}
-
-.tag-pill:hover {
-  background: var(--card-hover);
-  color: var(--text-primary);
-}
-
-.tag-pill.active {
-  background: var(--accent-gold);
-  color: #fff;
-  border-color: var(--accent-gold);
-  font-weight: 600;
-}
-
 /* Sidebar Footer */
 .sidebar-footer {
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding-top: 12px;
+  gap: 3px;
+  padding-top: 10px;
   border-top: 1px solid var(--border-subtle);
 }
 
@@ -396,9 +368,9 @@ html, body {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 10px;
-  border-radius: 8px;
-  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 7px;
+  font-size: 11.5px;
   font-weight: 500;
   color: var(--text-secondary);
   background: transparent;
@@ -433,11 +405,11 @@ html, body {
 }
 
 .panel-header {
-  padding: 14px 16px 10px 16px;
+  padding: 12px 14px 10px 14px;
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 9px;
 }
 
 .panel-top-row {
@@ -446,10 +418,16 @@ html, body {
   justify-content: space-between;
 }
 
+.panel-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .icon-btn-toggle {
-  width: 30px;
-  height: 30px;
-  border-radius: 7px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   border: 1px solid var(--border-subtle);
   background: var(--card-bg);
   color: var(--text-secondary);
@@ -466,7 +444,7 @@ html, body {
 }
 
 .panel-title {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.3px;
   color: var(--text-primary);
@@ -478,8 +456,8 @@ html, body {
   align-items: center;
   gap: 5px;
   padding: 5px 12px;
-  border-radius: 8px;
-  font-size: 12.5px;
+  border-radius: 7px;
+  font-size: 12px;
   font-weight: 600;
   background: var(--accent-gold);
   color: #fff;
@@ -514,9 +492,9 @@ html, body {
 
 .search-box input {
   width: 100%;
-  padding: 7px 30px 7px 32px;
-  border-radius: 8px;
-  font-size: 12.5px;
+  padding: 6px 28px 6px 30px;
+  border-radius: 7px;
+  font-size: 12px;
   background: var(--card-bg);
   border: 1px solid var(--border-subtle);
   color: var(--text-primary);
@@ -526,14 +504,14 @@ html, body {
 
 .search-box input:focus {
   border-color: var(--accent-gold);
-  box-shadow: 0 0 0 2.5px var(--accent-gold-soft);
+  box-shadow: 0 0 0 2px var(--accent-gold-soft);
 }
 
 .clear-search-btn {
   position: absolute;
-  right: 8px;
-  width: 16px;
-  height: 16px;
+  right: 7px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: var(--text-tertiary);
   color: #fff;
@@ -564,9 +542,9 @@ html, body {
   background: var(--card-bg);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 6px;
+  font-size: 10.5px;
+  padding: 2px 5px;
+  border-radius: 5px;
   outline: none;
   cursor: pointer;
 }
@@ -575,36 +553,32 @@ html, body {
   border-color: var(--accent-gold);
 }
 
-/* ==========================================================================
-   NOTES LIST & CARDS (Clean Apple Cards — NO RED BACKGROUND LEAK!)
-   ========================================================================== */
+/* Notes Cards List */
 .notes-scroll-area {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 10px 12px 24px 12px;
+  padding: 8px 10px 24px 10px;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-/* Wrapper: Clean transparent container */
 .note-card-wrapper {
   position: relative;
-  border-radius: 10px;
+  border-radius: 9px;
   overflow: hidden;
-  background: transparent; /* PURE TRANSPARENT - NOT RED! */
+  background: transparent;
   touch-action: pan-y;
   user-select: none;
 }
 
-/* Red background ONLY behind the swipe reveal area */
 .swipe-trash-action {
   position: absolute;
   right: 0;
   top: 0;
   bottom: 0;
-  width: 75px;
+  width: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -613,17 +587,16 @@ html, body {
   font-size: 12px;
   font-weight: 600;
   z-index: 1;
-  border-radius: 0 10px 10px 0;
+  border-radius: 0 9px 9px 0;
 }
 
-/* Individual Note Card */
 .note-card {
   position: relative;
   z-index: 2;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: 11px 14px;
+  border-radius: 9px;
+  padding: 10px 12px;
   cursor: pointer;
   box-shadow: var(--card-shadow);
   transition: background var(--speed-fast) ease, border-color var(--speed-fast) ease, box-shadow var(--speed-fast) ease, transform 180ms var(--spring-snappy);
@@ -649,11 +622,11 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .card-title {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
@@ -662,13 +635,12 @@ html, body {
   flex: 1;
 }
 
-/* Quick Actions on Hover */
 .card-quick-actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   opacity: 0;
-  transition: opacity 140ms ease;
+  transition: opacity 120ms ease;
 }
 
 .note-card:hover .card-quick-actions {
@@ -708,13 +680,13 @@ html, body {
 
 .card-snippet {
   font-size: 12px;
-  line-height: 1.45;
+  line-height: 1.4;
   color: var(--text-secondary);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 7px;
+  margin-bottom: 6px;
   word-break: break-word;
 }
 
@@ -739,20 +711,20 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 220px;
+  height: 200px;
   color: var(--text-tertiary);
   text-align: center;
-  gap: 10px;
+  gap: 8px;
   padding: 20px;
 }
 
 .empty-state-icon {
-  font-size: 34px;
+  font-size: 32px;
   opacity: 0.5;
 }
 
 /* ==========================================================================
-   COLUMN 3: NOTE EDITOR
+   COLUMN 3: NOTE EDITOR (Unified 52px Header + Centered Canvas)
    ========================================================================== */
 .editor-panel {
   background: var(--editor-bg);
@@ -779,7 +751,6 @@ html, body {
   gap: 12px;
 }
 
-/* Mobile Back Button: STRICTLY HIDDEN ON DESKTOP */
 .mobile-back-btn {
   display: none !important;
 }
@@ -822,7 +793,7 @@ html, body {
   border: none;
   background: transparent;
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -848,7 +819,7 @@ html, body {
   width: 1px;
   height: 14px;
   background: var(--border-subtle);
-  margin: 0 3px;
+  margin: 0 2px;
 }
 
 /* Actions Right */
@@ -893,11 +864,21 @@ html, body {
   background: var(--danger-soft);
 }
 
-/* Editor Body Area */
+/* ==========================================================================
+   CENTERED DOCUMENT CANVAS (NEAT & BALANCED LAYOUT)
+   ========================================================================== */
 .editor-content-wrap {
   flex: 1;
   overflow-y: auto;
-  padding: 24px 36px 60px 36px;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.editor-doc-canvas {
+  width: 100%;
+  max-width: 720px;
+  padding: 32px 32px 80px 32px;
   display: flex;
   flex-direction: column;
 }
@@ -905,10 +886,14 @@ html, body {
 .note-meta-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   font-size: 11.5px;
   color: var(--text-tertiary);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+}
+
+.folder-capsule-wrap {
+  display: inline-flex;
 }
 
 .folder-picker {
@@ -926,11 +911,16 @@ html, body {
   border-color: var(--accent-gold);
 }
 
+.meta-separator {
+  color: var(--text-tertiary);
+  opacity: 0.6;
+}
+
 .note-title-input {
   width: 100%;
   border: none;
   background: transparent;
-  font-size: 26px;
+  font-size: 27px;
   font-weight: 700;
   letter-spacing: -0.5px;
   color: var(--text-primary);
@@ -947,7 +937,7 @@ html, body {
 .checklist-container {
   background: var(--notes-bg);
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
+  border-radius: 11px;
   padding: 12px 14px;
   margin-bottom: 22px;
 }
@@ -974,9 +964,9 @@ html, body {
 }
 
 .checklist-badge {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
-  padding: 1px 7px;
+  padding: 1px 6px;
   border-radius: 10px;
   background: var(--accent-gold-soft);
   color: var(--accent-gold);
@@ -989,7 +979,7 @@ html, body {
 }
 
 .checklist-hint {
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--text-tertiary);
 }
 
@@ -997,7 +987,7 @@ html, body {
   font-size: 11.5px;
   font-weight: 600;
   color: var(--accent-gold);
-  padding: 3px 8px;
+  padding: 2px 7px;
   background: transparent;
 }
 
@@ -1020,10 +1010,9 @@ html, body {
   background: var(--card-bg);
 }
 
-/* Circular Apple Checkbox */
 .apple-checkbox {
-  width: 19px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   border: 1.8px solid var(--text-tertiary);
   background: transparent;
@@ -1078,7 +1067,7 @@ html, body {
   color: var(--text-tertiary);
   cursor: pointer;
   padding: 2px 6px;
-  font-size: 16px;
+  font-size: 15px;
   border-radius: 4px;
   transition: opacity 140ms ease, color 140ms ease;
 }
@@ -1096,7 +1085,7 @@ html, body {
   flex: 1;
   outline: none;
   font-size: 14.5px;
-  line-height: 1.65;
+  line-height: 1.7;
   color: var(--text-primary);
   user-select: text;
   min-height: 280px;
@@ -1107,7 +1096,7 @@ html, body {
   content: attr(placeholder);
   color: var(--text-tertiary);
   pointer-events: none;
-  opacity: 0.6;
+  opacity: 0.55;
 }
 
 .note-body-editor h1 {
@@ -1156,10 +1145,10 @@ html, body {
 
 .apple-modal {
   width: 90%;
-  max-width: 420px;
+  max-width: 410px;
   background: var(--card-bg);
   border: 1px solid var(--border-strong);
-  border-radius: 16px;
+  border-radius: 15px;
   padding: 22px;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
   transform: scale(0.95);
@@ -1212,7 +1201,7 @@ html, body {
 .apple-text-input {
   width: 100%;
   padding: 8px 11px;
-  border-radius: 8px;
+  border-radius: 7px;
   font-size: 13px;
   background: var(--notes-bg);
   border: 1px solid var(--border-subtle);
@@ -1231,12 +1220,12 @@ html, body {
 }
 
 .emoji-btn {
-  width: 34px;
-  height: 34px;
+  width: 33px;
+  height: 33px;
   border-radius: 7px;
   border: 1px solid var(--border-subtle);
   background: var(--notes-bg);
-  font-size: 17px;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1264,7 +1253,7 @@ html, body {
 
 .btn-apple-secondary {
   padding: 7px 14px;
-  border-radius: 8px;
+  border-radius: 7px;
   font-size: 12.5px;
   font-weight: 500;
   background: var(--notes-bg);
@@ -1280,7 +1269,7 @@ html, body {
 
 .btn-apple-primary {
   padding: 7px 14px;
-  border-radius: 8px;
+  border-radius: 7px;
   font-size: 12.5px;
   font-weight: 600;
   background: var(--accent-gold);
@@ -1295,13 +1284,13 @@ html, body {
 
 /* Apple Confirmation Alert Modal */
 .apple-alert-modal {
-  max-width: 310px;
+  max-width: 300px;
   text-align: center;
   padding: 22px 18px;
 }
 
 .alert-icon-wrap {
-  font-size: 36px;
+  font-size: 34px;
   margin-bottom: 8px;
 }
 
@@ -1327,7 +1316,7 @@ html, body {
 .btn-apple-danger {
   width: 100%;
   padding: 9px 14px;
-  border-radius: 8px;
+  border-radius: 7px;
   font-size: 13px;
   font-weight: 600;
   background: var(--danger);
@@ -1356,8 +1345,8 @@ html, body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 12px;
-  border-radius: 10px;
+  padding: 10px 12px;
+  border-radius: 9px;
   background: var(--notes-bg);
   border: 1px solid var(--border-subtle);
   color: var(--text-primary);
@@ -1428,7 +1417,7 @@ html, body {
   color: #fff;
   border: none;
   padding: 3px 9px;
-  border-radius: 10px;
+  border-radius: 9px;
   font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
@@ -1448,15 +1437,15 @@ html, body {
    ========================================================================== */
 @media (max-width: 900px) {
   .split-view {
-    grid-template-columns: 290px 1fr;
+    grid-template-columns: 280px 1fr;
   }
   
   .sidebar {
     display: none;
   }
 
-  .editor-content-wrap {
-    padding: 20px 24px;
+  .editor-doc-canvas {
+    padding: 24px 20px 60px 20px;
   }
 }
 
@@ -1482,7 +1471,6 @@ html, body {
     height: 100%;
   }
 
-  /* Show back button ONLY on mobile */
   .mobile-back-btn {
     display: flex !important;
     align-items: center;
@@ -1500,8 +1488,8 @@ html, body {
     display: none;
   }
 
-  .editor-content-wrap {
-    padding: 16px 16px;
+  .editor-doc-canvas {
+    padding: 16px 16px 40px 16px;
   }
 
   .card-quick-actions {

@@ -1,15 +1,10 @@
 /**
  * iNotes — Apple Style Notes & Checklist
- * Implements Apple Design WWDC principles:
- * - Fluid spring motion & tactile feedback
- * - Instant input feedback & Web Audio haptic simulation
- * - Direct card hover actions + swipe gesture
- * - Undo/Batalkan capability for zero-friction note management
- * - Custom folder creation & Apple alert confirmation
+ * Clean, modular, responsive Apple macOS/iOS experience
  */
 
 // =============================================================================
-// 1. SOUND GENERATOR (Apple Haptic Audio via Web Audio API)
+// 1. SOUND FX (Apple Haptic Audio via Web Audio API)
 // =============================================================================
 class SoundFX {
   constructor() {
@@ -88,14 +83,14 @@ const INITIAL_NOTES = [
   {
     id: 'note-1',
     title: 'Selamat Datang di iNotes ✨',
-    body: '<div>iNotes didesain dengan panduan <b>Apple Human Interface</b>:</div><br><div>• Aksi hover cepat di kartu (ikon Pin &amp; Hapus langsung terlihat).</div><div>• Tekan <b>Enter</b> di checklist untuk otomatis membuat baris to-do baru!</div><div>• Dilengkapi tombol <b>Batalkan / Undo</b> jika tak sengaja menghapus catatan.</div><div>• Buat folder kustom sendiri dengan tombol <b>+ Folder Baru</b>.</div>',
+    body: '<div>iNotes didesain dengan panduan <b>Apple Human Interface</b> &amp; <b>Fluid Motion</b>:</div><br><div>• Tampilan rapi, simetris, dan terpusat (*centered reading canvas*).</div><div>• Tekan <b>Enter</b> di checklist untuk otomatis membuat baris baru.</div><div>• Hover di kartu catatan untuk aksi cepat (Pin &amp; Hapus).</div><div>• Dilengkapi fitur <b>Batalkan / Undo</b> jika tak sengaja menghapus.</div>',
     folder: 'ideas',
     pinned: true,
     checklist: [
-      { id: 'c1', text: 'Ketik tugas baru lalu tekan Enter untuk buat baris berikutnya', done: true },
-      { id: 'c2', text: 'Arahkan kursor ke kartu catatan untuk melihat tombol Hapus / Pin langsung', done: false },
-      { id: 'c3', text: 'Coba buat folder baru dengan memilih emoji favoritmu', done: false },
-      { id: 'c4', text: 'Ganti tema gelap atau terang dengan tombol di sidebar', done: false }
+      { id: 'c1', text: 'Ketik tugas baru lalu tekan Enter untuk baris berikutnya', done: true },
+      { id: 'c2', text: 'Arahkan kursor ke kartu catatan untuk melihat tombol Pin & Hapus', done: false },
+      { id: 'c3', text: 'Coba buat folder kustom baru dengan ikon emoji favorit', done: false },
+      { id: 'c4', text: 'Ganti tema gelap atau terang dari tombol di pojok bawah', done: false }
     ],
     createdAt: Date.now() - 1000 * 60 * 60 * 5,
     updatedAt: Date.now() - 1000 * 60 * 10
@@ -103,12 +98,12 @@ const INITIAL_NOTES = [
   {
     id: 'note-2',
     title: 'Rencana Peluncuran Web ke Vercel 🚀',
-    body: '<div>Checklist kesiapan deployment ke Vercel untuk aplikasi modern:</div><br><div>1. Pastikan build artifact berjalan tanpa warning.</div><div>2. Uji responsivitas di layar iPhone &amp; tablet.</div>',
+    body: '<div>Checklist kesiapan deployment ke Vercel untuk aplikasi modern:</div><br><div>1. Pastikan build artifact berjalan tanpa warning.</div><div>2. Uji responsivitas di layar iPhone &amp; tablet.</div><div>3. Cek kembali kontras warna dan tipografi.</div>',
     folder: 'work',
     pinned: true,
     checklist: [
-      { id: 'c5', text: 'Konfigurasi file vercel.json untuk routing statis', done: true },
-      { id: 'c6', text: 'Testing Lighthouse Score performa & SEO', done: true },
+      { id: 'c5', text: 'Setup file vercel.json untuk routing statis Vite', done: true },
+      { id: 'c6', text: 'Testing performa & SEO', done: true },
       { id: 'c7', text: 'Jalankan npx vercel untuk deploy instan', done: false }
     ],
     createdAt: Date.now() - 1000 * 60 * 60 * 20,
@@ -117,13 +112,13 @@ const INITIAL_NOTES = [
   {
     id: 'note-3',
     title: 'Daftar Belanja Kebutuhan Mingguan 🛒',
-    body: '<div>Bahan-bahan kopi dan camilan untuk meja kerja:</div>',
+    body: '<div>Bahan-bahan kopi dan camilan untuk workspace meja kerja:</div>',
     folder: 'personal',
     pinned: false,
     checklist: [
       { id: 'c8', text: 'Biji Kopi Arabika Specialty 250g', done: false },
       { id: 'c9', text: 'Oat Milk Barista Edition', done: true },
-      { id: 'c10', text: 'Snack sehat almond panggang', done: false }
+      { id: 'c10', text: 'Almond panggang premium', done: false }
     ],
     createdAt: Date.now() - 1000 * 60 * 60 * 48,
     updatedAt: Date.now() - 1000 * 60 * 60 * 24
@@ -139,7 +134,7 @@ class AppState {
     this.notes = this.loadNotes();
     this.activeNoteId = this.notes[0]?.id || null;
     this.currentFolder = 'all';
-    this.activeTagFilter = 'all'; // 'all', 'pinned', 'todo'
+    this.smartFilter = 'all'; // 'all', 'pinned', 'todo'
     this.searchQuery = '';
     this.sortBy = localStorage.getItem('inotes_sort') || 'updated';
     this.theme = localStorage.getItem('inotes_theme') || 'dark';
@@ -188,15 +183,16 @@ class AppState {
 
   getFilteredNotes() {
     let filtered = this.notes.filter(note => {
-      // Folder filter
+      // Smart Filter
+      if (this.smartFilter === 'pinned' && !note.pinned) return false;
+      if (this.smartFilter === 'todo' && (!note.checklist || note.checklist.length === 0)) return false;
+
+      // Folder Filter
       if (this.currentFolder !== 'all' && note.folder !== this.currentFolder) {
         return false;
       }
-      // Tag filter
-      if (this.activeTagFilter === 'pinned' && !note.pinned) return false;
-      if (this.activeTagFilter === 'todo' && (!note.checklist || note.checklist.length === 0)) return false;
 
-      // Search query filter
+      // Search Query
       if (this.searchQuery.trim()) {
         const q = this.searchQuery.toLowerCase();
         const inTitle = (note.title || '').toLowerCase().includes(q);
@@ -210,15 +206,12 @@ class AppState {
 
     // Sorting
     filtered.sort((a, b) => {
-      // Pinned notes always stick to the top
       if (a.pinned !== b.pinned) return b.pinned ? 1 : -1;
-
       if (this.sortBy === 'created') {
         return (b.createdAt || 0) - (a.createdAt || 0);
       } else if (this.sortBy === 'title') {
         return (a.title || '').localeCompare(b.title || '');
       } else {
-        // 'updated'
         return (b.updatedAt || 0) - (a.updatedAt || 0);
       }
     });
@@ -235,7 +228,11 @@ const state = new AppState();
 const splitView = document.getElementById('splitView');
 const sidebar = document.getElementById('sidebar');
 const folderList = document.getElementById('folderList');
-const tagList = document.getElementById('tagList');
+const smartFilterList = document.getElementById('smartFilterList');
+const badgeAllCount = document.getElementById('badgeAllCount');
+const badgePinnedCount = document.getElementById('badgePinnedCount');
+const badgeTodoCount = document.getElementById('badgeTodoCount');
+
 const btnOpenNewFolderModal = document.getElementById('btnOpenNewFolderModal');
 const btnNewFolderInline = document.getElementById('btnNewFolderInline');
 const btnToggleSidebar = document.getElementById('btnToggleSidebar');
@@ -329,7 +326,7 @@ toastUndoBtn.addEventListener('click', () => {
     state.lastDeleted = null;
     state.saveNotes();
     sfx.playCheck();
-    renderFolders();
+    renderSidebar();
     renderNotesList();
     renderEditor();
     showToast('Catatan dipulihkan! ↩️', false);
@@ -380,16 +377,18 @@ function formatDate(timestamp) {
   return `${d.toLocaleDateString([], { day: 'numeric', month: 'short' })}, ${timeStr}`;
 }
 
-function renderFolders() {
+function renderSidebar() {
   folderList.innerHTML = '';
   
+  // Render Folders
   state.folders.forEach(folder => {
     const count = folder.id === 'all' 
       ? state.notes.length 
       : state.notes.filter(n => n.folder === folder.id).length;
 
     const btn = document.createElement('button');
-    btn.className = `folder-item ${state.currentFolder === folder.id ? 'active' : ''}`;
+    const isFolderActive = state.currentFolder === folder.id && state.smartFilter === 'all';
+    btn.className = `folder-item ${isFolderActive ? 'active' : ''}`;
     btn.innerHTML = `
       <div class="folder-item-left">
         <span>${folder.icon}</span>
@@ -401,15 +400,29 @@ function renderFolders() {
     btn.addEventListener('click', () => {
       sfx.playPop(800, 0.03);
       state.currentFolder = folder.id;
+      state.smartFilter = 'all';
       currentFolderTitle.textContent = folder.name;
-      renderFolders();
+      renderSidebar();
       renderNotesList();
     });
 
     folderList.appendChild(btn);
   });
 
-  // Populate editor folder select
+  // Update Smart Filters Badges
+  const pinnedCount = state.notes.filter(n => n.pinned).length;
+  const todoCount = state.notes.filter(n => n.checklist && n.checklist.length > 0).length;
+
+  badgeAllCount.textContent = state.notes.length;
+  badgePinnedCount.textContent = pinnedCount;
+  badgeTodoCount.textContent = todoCount;
+
+  smartFilterList.querySelectorAll('.smart-item').forEach(btn => {
+    const filter = btn.dataset.filter;
+    btn.classList.toggle('active', state.smartFilter === filter && state.currentFolder === 'all');
+  });
+
+  // Update editor folder selector
   noteFolderSelect.innerHTML = '';
   state.folders.filter(f => f.id !== 'all').forEach(f => {
     const opt = document.createElement('option');
@@ -418,6 +431,22 @@ function renderFolders() {
     noteFolderSelect.appendChild(opt);
   });
 }
+
+// Smart filter click handlers
+smartFilterList.addEventListener('click', (e) => {
+  const btn = e.target.closest('.smart-item');
+  if (!btn) return;
+  sfx.playPop(800, 0.03);
+  state.smartFilter = btn.dataset.filter;
+  state.currentFolder = 'all';
+
+  if (state.smartFilter === 'pinned') currentFolderTitle.textContent = 'Catatan Disematkan';
+  else if (state.smartFilter === 'todo') currentFolderTitle.textContent = 'Catatan Ber-Checklist';
+  else currentFolderTitle.textContent = 'Semua Catatan';
+
+  renderSidebar();
+  renderNotesList();
+});
 
 function renderNotesList() {
   const filtered = state.getFilteredNotes();
@@ -429,8 +458,8 @@ function renderNotesList() {
     notesListContainer.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">📋</div>
-        <div style="font-weight: 600; font-size: 14px;">Tidak ada catatan</div>
-        <div style="font-size: 12px; color: var(--text-tertiary);">Klik "Baru" untuk mulai menulis ide atau to-do</div>
+        <div style="font-weight: 600; font-size: 13.5px;">Tidak ada catatan</div>
+        <div style="font-size: 11.5px; color: var(--text-tertiary);">Klik "Baru" untuk mulai menulis catatan</div>
       </div>
     `;
     return;
@@ -440,7 +469,7 @@ function renderNotesList() {
     const wrapper = document.createElement('div');
     wrapper.className = 'note-card-wrapper';
 
-    // Swipe trash background action (for touch gestures)
+    // Swipe trash background action (only visible on swipe)
     const trashAction = document.createElement('div');
     trashAction.className = 'swipe-trash-action';
     trashAction.innerHTML = `<span>Hapus</span>`;
@@ -452,7 +481,7 @@ function renderNotesList() {
     // Plain text snippet
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = note.body || '';
-    const plainText = tempDiv.textContent || tempDiv.innerText || 'Belum ada isi catatan...';
+    const plainText = (tempDiv.textContent || tempDiv.innerText || 'Belum ada isi catatan...').trim();
 
     const totalTodos = note.checklist ? note.checklist.length : 0;
     const doneTodos = note.checklist ? note.checklist.filter(c => c.done).length : 0;
@@ -482,12 +511,13 @@ function renderNotesList() {
       note.pinned = !note.pinned;
       sfx.playPop(note.pinned ? 1000 : 700, 0.04);
       state.saveNotes();
+      renderSidebar();
       renderNotesList();
       renderEditor();
       showToast(note.pinned ? 'Catatan disematkan 📌' : 'Sematan dilepas');
     });
 
-    // Quick Action: DELETE directly from card (User-Friendly Desktop experience!)
+    // Quick Action: DELETE directly from card
     const btnDelCard = card.querySelector('.card-action-delete');
     btnDelCard.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -564,7 +594,7 @@ function setupSwipeGesture(card, wrapper, onDelete) {
     card.releasePointerCapture(pointerId);
 
     const deltaX = currentX - startX;
-    card.style.transition = 'transform 260ms cubic-bezier(0.16, 1, 0.3, 1)';
+    card.style.transition = 'transform 240ms cubic-bezier(0.16, 1, 0.3, 1)';
 
     if (deltaX < -110) {
       card.dataset.swiped = 'true';
@@ -646,7 +676,7 @@ function renderChecklist(note) {
     const checkbox = document.createElement('button');
     checkbox.className = `apple-checkbox ${item.done ? 'checked' : ''}`;
     checkbox.innerHTML = `
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="20 6 9 17 4 12"></polyline>
       </svg>
     `;
@@ -675,7 +705,6 @@ function renderChecklist(note) {
       triggerAutoSave();
     });
 
-    // FLUID UX: Enter creates new item right below, Backspace deletes empty item
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -805,11 +834,10 @@ function triggerAutoSave() {
     noteDateMeta.textContent = `Diedit ${formatDate(note.updatedAt)}`;
     updateWordCount();
     renderNotesList();
-    renderFolders();
+    renderSidebar();
   }, 350);
 }
 
-// When user presses Enter in Title, jump to body
 noteTitleInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     e.preventDefault();
@@ -817,7 +845,6 @@ noteTitleInput.addEventListener('keydown', (e) => {
   }
 });
 
-// Clean paste for rich text
 noteBodyEditor.addEventListener('paste', (e) => {
   e.preventDefault();
   const text = (e.originalEvent || e).clipboardData.getData('text/plain');
@@ -850,7 +877,7 @@ function createNewNote() {
   state.activeNoteId = newNote.id;
   state.saveNotes();
 
-  renderFolders();
+  renderSidebar();
   renderNotesList();
   renderEditor();
 
@@ -867,7 +894,6 @@ function deleteNote(noteId) {
   const idx = state.notes.findIndex(n => n.id === noteId);
   if (idx === -1) return;
 
-  // Save to undo buffer
   const [removedNote] = state.notes.splice(idx, 1);
   state.lastDeleted = { note: removedNote, index: idx };
 
@@ -876,7 +902,7 @@ function deleteNote(noteId) {
   }
   state.saveNotes();
   sfx.playPop(450, 0.06);
-  renderFolders();
+  renderSidebar();
   renderNotesList();
   renderEditor();
   showToast('Catatan dihapus', true);
@@ -888,6 +914,7 @@ function togglePinNote() {
   note.pinned = !note.pinned;
   sfx.playPop(note.pinned ? 1000 : 700, 0.04);
   state.saveNotes();
+  renderSidebar();
   renderNotesList();
   renderEditor();
   showToast(note.pinned ? 'Catatan disematkan 📌' : 'Sematan dilepas');
@@ -937,10 +964,11 @@ btnConfirmFolder.addEventListener('click', () => {
 
   state.saveFolders();
   state.currentFolder = folderId;
+  state.smartFilter = 'all';
   currentFolderTitle.textContent = name;
   folderModal.classList.remove('open');
   sfx.playCheck();
-  renderFolders();
+  renderSidebar();
   renderNotesList();
   showToast(`Folder "${name}" dibuat! 📂`);
 });
@@ -1016,23 +1044,11 @@ btnClearSearch.addEventListener('click', () => {
   renderNotesList();
 });
 
-// Sort Selector
 sortSelect.value = state.sortBy;
 sortSelect.addEventListener('change', (e) => {
   state.sortBy = e.target.value;
   localStorage.setItem('inotes_sort', state.sortBy);
   sfx.playPop(800, 0.03);
-  renderNotesList();
-});
-
-// Tag Filters
-tagList.addEventListener('click', (e) => {
-  const btn = e.target.closest('.tag-pill');
-  if (!btn) return;
-  sfx.playPop(800, 0.03);
-  tagList.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  state.activeTagFilter = btn.dataset.filter;
   renderNotesList();
 });
 
@@ -1147,6 +1163,6 @@ window.addEventListener('keydown', (e) => {
 // =============================================================================
 applyTheme(state.theme);
 soundLabel.textContent = sfx.enabled ? 'Suara: Nyala' : 'Suara: Mati';
-renderFolders();
+renderSidebar();
 renderNotesList();
 renderEditor();
