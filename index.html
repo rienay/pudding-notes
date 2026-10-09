@@ -14,7 +14,7 @@
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
     <link rel="stylesheet" href="/src/style.css" />
@@ -47,15 +47,29 @@
             </div>
           </div>
 
+          <!-- Section: Folders / Koleksi -->
           <div class="sidebar-section">
-            <div class="section-title">Koleksi</div>
+            <div class="section-title-row">
+              <span class="section-title">Koleksi Folder</span>
+              <button class="btn-icon-tiny" id="btnOpenNewFolderModal" title="Tambah Folder Baru">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
             <nav class="folder-list" id="folderList">
               <!-- Rendered via JS -->
             </nav>
+            <button class="btn-new-folder-action" id="btnNewFolderInline">
+              <span>+</span>
+              <span>Folder Baru</span>
+            </button>
           </div>
 
+          <!-- Section: Filter Cepat -->
           <div class="sidebar-section">
-            <div class="section-title">Tag & Status</div>
+            <div class="section-title">Filter Cepat</div>
             <div class="tag-list" id="tagList">
               <button class="tag-pill active" data-filter="all">Semua</button>
               <button class="tag-pill" data-filter="pinned">Disematkan 📌</button>
@@ -94,7 +108,7 @@
               </button>
               <h1 class="panel-title" id="currentFolderTitle">Semua Catatan</h1>
               <button class="btn-create" id="btnNewNote" title="Catatan Baru (Ctrl+N)">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19"></line>
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
@@ -108,16 +122,27 @@
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
-              <input type="text" id="searchInput" placeholder="Cari catatan atau tugas..." autocomplete="off" />
+              <input type="text" id="searchInput" placeholder="Cari catatan, tugas, atau ide..." autocomplete="off" />
               <button class="clear-search-btn" id="btnClearSearch" title="Hapus pencarian">&times;</button>
             </div>
             
-            <div class="notes-count-meta" id="notesCountMeta">Memuat...</div>
+            <!-- Controls row: Note counter & Sort By -->
+            <div class="panel-meta-row">
+              <span class="notes-count-meta" id="notesCountMeta">Memuat...</span>
+              <div class="sort-selector-wrap">
+                <label for="sortSelect">Urut:</label>
+                <select id="sortSelect" class="sort-select" title="Urutkan catatan">
+                  <option value="updated">Terakhir Diubah</option>
+                  <option value="created">Terbaru Dibuat</option>
+                  <option value="title">Judul (A-Z)</option>
+                </select>
+              </div>
+            </div>
           </div>
 
           <!-- Notes Scrollable List -->
           <div class="notes-scroll-area" id="notesListContainer">
-            <!-- Dynamic Note Cards (with swipe-to-delete) -->
+            <!-- Dynamic Note Cards (with hover action buttons & swipe support) -->
           </div>
         </section>
 
@@ -212,7 +237,10 @@
                   <span class="checklist-title">Checklist & Tugas</span>
                   <span class="checklist-badge" id="checklistProgressBadge">0/0</span>
                 </div>
-                <button class="btn-subtle btn-add-check-item" id="btnAddCheckItem">+ Item Baru</button>
+                <div class="checklist-header-actions">
+                  <span class="checklist-hint">💡 Tekan Enter untuk baris baru</span>
+                  <button class="btn-subtle btn-add-check-item" id="btnAddCheckItem">+ Item Baru</button>
+                </div>
               </div>
               <div class="checklist-items" id="checklistItemsList">
                 <!-- Checklist items injected via JS -->
@@ -224,6 +252,53 @@
           </div>
         </main>
 
+      </div>
+
+      <!-- NEW FOLDER MODAL -->
+      <div class="apple-modal-overlay" id="folderModal">
+        <div class="apple-modal frosted">
+          <div class="modal-header">
+            <h3>Buat Folder Baru</h3>
+            <button class="modal-close" id="btnFolderModalClose">&times;</button>
+          </div>
+          <div class="modal-body">
+            <p>Kelompokkan catatan berdasarkan proyek atau kategori:</p>
+            <div class="form-group">
+              <label for="newFolderNameInput">Nama Folder</label>
+              <input type="text" class="apple-text-input" id="newFolderNameInput" placeholder="Contoh: Kuliah, Resep, Keuangan..." maxlength="24" />
+            </div>
+            <div class="form-group">
+              <label>Pilih Ikon Emoji</label>
+              <div class="emoji-picker-row" id="emojiPickerRow">
+                <button type="button" class="emoji-btn active" data-emoji="📁">📁</button>
+                <button type="button" class="emoji-btn" data-emoji="🎓">🎓</button>
+                <button type="button" class="emoji-btn" data-emoji="🚀">🚀</button>
+                <button type="button" class="emoji-btn" data-emoji="💰">💰</button>
+                <button type="button" class="emoji-btn" data-emoji="🎨">🎨</button>
+                <button type="button" class="emoji-btn" data-emoji="📖">📖</button>
+                <button type="button" class="emoji-btn" data-emoji="☕">☕</button>
+                <button type="button" class="emoji-btn" data-emoji="⭐">⭐</button>
+              </div>
+            </div>
+            <div class="modal-buttons-row">
+              <button class="btn-apple-secondary" id="btnCancelFolder">Batal</button>
+              <button class="btn-apple-primary" id="btnConfirmFolder">Simpan Folder</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPLE CONFIRMATION ALERT MODAL -->
+      <div class="apple-modal-overlay" id="confirmModal">
+        <div class="apple-modal frosted apple-alert-modal">
+          <div class="alert-icon-wrap" id="alertIcon">🗑️</div>
+          <h3 class="alert-title" id="alertTitle">Hapus Catatan?</h3>
+          <p class="alert-message" id="alertMessage">Catatan ini akan dihapus. Anda dapat membatalkannya sesaat setelah ini.</p>
+          <div class="alert-buttons-col">
+            <button class="btn-apple-danger" id="btnAlertConfirm">Hapus</button>
+            <button class="btn-apple-secondary" id="btnAlertCancel">Batal</button>
+          </div>
+        </div>
       </div>
 
       <!-- Export / Share Toast & Modal -->
@@ -239,7 +314,7 @@
               <button class="modal-action-card" id="btnCopyMarkdown">
                 <div class="modal-action-icon">📋</div>
                 <div class="modal-action-title">Salin Markdown</div>
-                <div class="modal-action-desc">Salin teks lengkap dengan format ke clipboard</div>
+                <div class="modal-action-desc">Salin teks lengkap dengan checklist ke clipboard</div>
               </button>
               <button class="modal-action-card" id="btnDownloadMd">
                 <div class="modal-action-icon">💾</div>
@@ -248,18 +323,19 @@
               </button>
               <button class="modal-action-card" id="btnPrintNote">
                 <div class="modal-action-icon">🖨️</div>
-                <div class="modal-action-title">Cetak / PDF</div>
-                <div class="modal-action-desc">Cetak dokumen atau simpan sebagai PDF</div>
+                <div class="modal-action-title">Cetak / Simpan PDF</div>
+                <div class="modal-action-desc">Cetak dokumen atau simpan sebagai PDF langsung</div>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Notification Toast -->
+      <!-- Notification Toast with UNDO Button -->
       <div class="apple-toast" id="appleToast">
         <span class="toast-icon">✓</span>
         <span class="toast-message" id="toastMessage">Tersimpan</span>
+        <button class="toast-undo-btn" id="toastUndoBtn">Batalkan</button>
       </div>
 
     </div>
