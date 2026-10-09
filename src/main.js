@@ -1,10 +1,14 @@
 /**
- * iNotes — Apple Style Notes & Checklist
- * Clean, modular, responsive Apple macOS/iOS experience
+ * Pudding Notes 🍮 — Apple Style Notes & Checklist
+ * Unique Signature Features:
+ * 1. Pudding Mood Flavors (Caramel, Matcha, Berry, Choco)
+ * 2. Pudding Bounce Physics & Bubble Audio
+ * 3. Focus / Zen Writing Mode
+ * 4. Circular Progress Ring & Confetti Celebration
  */
 
 // =============================================================================
-// 1. SOUND FX (Apple Haptic Audio via Web Audio API)
+// 1. SOUND FX (Apple Haptic + Pudding Bubble Synthesizer via Web Audio API)
 // =============================================================================
 class SoundFX {
   constructor() {
@@ -49,20 +53,47 @@ class SoundFX {
     try {
       this.init();
       if (!this.ctx) return;
+      // Soft pudding bubble drop sound
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(520, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(1040, this.ctx.currentTime + 0.06);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.07);
 
       gain.gain.setValueAtTime(0.06, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.09);
 
       osc.connect(gain);
       gain.connect(this.ctx.destination);
 
       osc.start();
-      osc.stop(this.ctx.currentTime + 0.08);
+      osc.stop(this.ctx.currentTime + 0.09);
+    } catch {}
+  }
+
+  playCelebration() {
+    if (!this.enabled) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      // Arpeggiated cheerful chime: C5, E5, G5, C6
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((freq, i) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const startTime = this.ctx.currentTime + i * 0.08;
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, startTime);
+
+        gain.gain.setValueAtTime(0.05, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.25);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(startTime);
+        osc.stop(startTime + 0.25);
+      });
     } catch {}
   }
 }
@@ -83,14 +114,14 @@ const INITIAL_NOTES = [
   {
     id: 'note-1',
     title: 'Selamat Datang di Pudding Notes 🍮✨',
-    body: '<div><b>Pudding Notes</b> didesain dengan sentuhan lembut, elegan, dan estetik Apple Human Interface:</div><br><div>• Tampilan rapi, simetris, dan terpusat (*centered reading canvas*).</div><div>• Tekan <b>Enter</b> di checklist untuk otomatis membuat baris baru.</div><div>• Hover di kartu catatan untuk aksi cepat (Pin &amp; Hapus).</div><div>• Dilengkapi fitur <b>Batalkan / Undo</b> jika tak sengaja menghapus.</div>',
+    body: '<div><b>Pudding Notes</b> kini dilengkapi 4 ciri khas unik yang membedakannya dari aplikasi lain:</div><br><div>1. <b>Varian Rasa Pudding</b> di sidebar: Caramel 🍮, Matcha 🍵, Berry 🍓, dan Dark Choco 🍫.</div><div>2. <b>Fisika Pudding Bounce</b>: Coba centang tugas di bawah ini untuk melihat efek pantulan jeli yang memuaskan!</div><div>3. <b>Circular Progress Ring</b>: Lingkaran progress & bar yang terisi mulus secara visual.</div><div>4. <b>Focus / Zen Mode</b>: Tekan ikon expand di pojok kanan atas untuk menulis tanpa distraksi!</div>',
     folder: 'ideas',
     pinned: true,
     checklist: [
-      { id: 'c1', text: 'Ketik tugas baru lalu tekan Enter untuk baris berikutnya', done: true },
-      { id: 'c2', text: 'Arahkan kursor ke kartu catatan untuk melihat tombol Pin & Hapus', done: false },
-      { id: 'c3', text: 'Coba buat folder kustom baru dengan ikon emoji favorit', done: false },
-      { id: 'c4', text: 'Ganti tema gelap atau terang dari tombol di pojok bawah', done: false }
+      { id: 'c1', text: 'Coba ganti rasa pudding di menu sidebar (Caramel, Matcha, Berry, Choco)', done: true },
+      { id: 'c2', text: 'Klik checklist ini untuk melihat animasi Pudding Bounce', done: false },
+      { id: 'c3', text: 'Selesaikan semua tugas untuk melihat kejutan selebrasi 🎉', done: false },
+      { id: 'c4', text: 'Coba tombol Focus / Zen Mode untuk menulis layar penuh', done: false }
     ],
     createdAt: Date.now() - 1000 * 60 * 60 * 5,
     updatedAt: Date.now() - 1000 * 60 * 10
@@ -134,10 +165,12 @@ class AppState {
     this.notes = this.loadNotes();
     this.activeNoteId = this.notes[0]?.id || null;
     this.currentFolder = 'all';
-    this.smartFilter = 'all'; // 'all', 'pinned', 'todo'
+    this.smartFilter = 'all';
     this.searchQuery = '';
     this.sortBy = localStorage.getItem('inotes_sort') || 'updated';
     this.theme = localStorage.getItem('inotes_theme') || 'dark';
+    this.flavor = localStorage.getItem('pudding_flavor') || 'caramel';
+    this.isZenMode = false;
     this.saveTimeout = null;
     
     // Undo buffer
@@ -183,16 +216,13 @@ class AppState {
 
   getFilteredNotes() {
     let filtered = this.notes.filter(note => {
-      // Smart Filter
       if (this.smartFilter === 'pinned' && !note.pinned) return false;
       if (this.smartFilter === 'todo' && (!note.checklist || note.checklist.length === 0)) return false;
 
-      // Folder Filter
       if (this.currentFolder !== 'all' && note.folder !== this.currentFolder) {
         return false;
       }
 
-      // Search Query
       if (this.searchQuery.trim()) {
         const q = this.searchQuery.toLowerCase();
         const inTitle = (note.title || '').toLowerCase().includes(q);
@@ -204,7 +234,6 @@ class AppState {
       return true;
     });
 
-    // Sorting
     filtered.sort((a, b) => {
       if (a.pinned !== b.pinned) return b.pinned ? 1 : -1;
       if (this.sortBy === 'created') {
@@ -225,6 +254,7 @@ const state = new AppState();
 // =============================================================================
 // 4. DOM ELEMENTS
 // =============================================================================
+const appContainer = document.getElementById('app');
 const splitView = document.getElementById('splitView');
 const sidebar = document.getElementById('sidebar');
 const folderList = document.getElementById('folderList');
@@ -232,6 +262,7 @@ const smartFilterList = document.getElementById('smartFilterList');
 const badgeAllCount = document.getElementById('badgeAllCount');
 const badgePinnedCount = document.getElementById('badgePinnedCount');
 const badgeTodoCount = document.getElementById('badgeTodoCount');
+const flavorPicker = document.getElementById('flavorPicker');
 
 const btnOpenNewFolderModal = document.getElementById('btnOpenNewFolderModal');
 const btnNewFolderInline = document.getElementById('btnNewFolderInline');
@@ -252,6 +283,8 @@ const notesListContainer = document.getElementById('notesListContainer');
 const btnMobileBack = document.getElementById('btnMobileBack');
 const saveStatus = document.getElementById('saveStatus');
 const editorToolbar = document.getElementById('editorToolbar');
+const btnToggleZen = document.getElementById('btnToggleZen');
+const btnExitZen = document.getElementById('btnExitZen');
 const btnPinNote = document.getElementById('btnPinNote');
 const btnExportNote = document.getElementById('btnExportNote');
 const btnDeleteCurrentNote = document.getElementById('btnDeleteCurrentNote');
@@ -259,11 +292,16 @@ const noteDateMeta = document.getElementById('noteDateMeta');
 const noteWordsMeta = document.getElementById('noteWordsMeta');
 const noteFolderSelect = document.getElementById('noteFolderSelect');
 const noteTitleInput = document.getElementById('noteTitleInput');
+
+// Checklist Elements
 const checklistSection = document.getElementById('checklistSection');
+const progressRingCircle = document.getElementById('progressRingCircle');
+const puddingProgressBar = document.getElementById('puddingProgressBar');
 const checklistProgressBadge = document.getElementById('checklistProgressBadge');
 const btnAddCheckItem = document.getElementById('btnAddCheckItem');
 const checklistItemsList = document.getElementById('checklistItemsList');
 const noteBodyEditor = document.getElementById('noteBodyEditor');
+const puddingConfetti = document.getElementById('puddingConfetti');
 
 // Folder Modal Elements
 const folderModal = document.getElementById('folderModal');
@@ -296,7 +334,76 @@ const toastMessage = document.getElementById('toastMessage');
 const toastUndoBtn = document.getElementById('toastUndoBtn');
 
 // =============================================================================
-// 5. TOAST & APPLE ALERT DIALOG
+// 5. SIGNATURE FEATURES: FLAVORS, ZEN MODE, CONFETTI
+// =============================================================================
+
+// 1. PUDDING FLAVOR THEME SWITCHER
+function applyFlavor(flavor) {
+  state.flavor = flavor;
+  document.documentElement.setAttribute('data-flavor', flavor);
+  localStorage.setItem('pudding_flavor', flavor);
+
+  flavorPicker.querySelectorAll('.flavor-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.flavor === flavor);
+  });
+}
+
+flavorPicker.addEventListener('click', (e) => {
+  const btn = e.target.closest('.flavor-pill');
+  if (!btn) return;
+  const flavor = btn.dataset.flavor;
+  applyFlavor(flavor);
+  sfx.playPop(1050, 0.04);
+  showToast(`Rasa ${btn.textContent} diaktifkan! ✨`);
+});
+
+// 2. FOCUS / ZEN WRITING MODE
+function toggleZenMode() {
+  state.isZenMode = !state.isZenMode;
+  appContainer.classList.toggle('zen-mode', state.isZenMode);
+  btnToggleZen.classList.toggle('active', state.isZenMode);
+  sfx.playPop(state.isZenMode ? 1100 : 700, 0.05);
+
+  if (state.isZenMode) {
+    showToast('Focus / Zen Mode Aktif 🧘 (Tekan Esc untuk keluar)');
+  }
+}
+
+btnToggleZen.addEventListener('click', toggleZenMode);
+btnExitZen.addEventListener('click', toggleZenMode);
+
+// 3. CONFETTI CELEBRATION BURST
+function triggerConfettiBurst() {
+  puddingConfetti.innerHTML = '';
+  const colors = ['#f5a623', '#32d74b', '#ff453a', '#5e5ce6', '#ffd60a', '#ff375f'];
+
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-particle';
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const left = 30 + Math.random() * 40; // Center burst around editor
+    const delay = Math.random() * 0.3;
+    const duration = 1 + Math.random() * 0.8;
+
+    p.style.backgroundColor = color;
+    p.style.left = left + '%';
+    p.style.top = '30%';
+    p.style.animationDelay = delay + 's';
+    p.style.animationDuration = duration + 's';
+    p.style.transform = `scale(${0.6 + Math.random() * 0.8})`;
+
+    puddingConfetti.appendChild(p);
+  }
+
+  sfx.playCelebration();
+
+  setTimeout(() => {
+    puddingConfetti.innerHTML = '';
+  }, 2200);
+}
+
+// =============================================================================
+// 6. TOAST & APPLE ALERT DIALOG
 // =============================================================================
 
 function showToast(msg, withUndo = false) {
@@ -364,7 +471,7 @@ confirmModal.addEventListener('click', (e) => {
 });
 
 // =============================================================================
-// 6. RENDER FUNCTIONS
+// 7. RENDER FUNCTIONS
 // =============================================================================
 
 function formatDate(timestamp) {
@@ -380,7 +487,6 @@ function formatDate(timestamp) {
 function renderSidebar() {
   folderList.innerHTML = '';
   
-  // Render Folders
   state.folders.forEach(folder => {
     const count = folder.id === 'all' 
       ? state.notes.length 
@@ -409,7 +515,6 @@ function renderSidebar() {
     folderList.appendChild(btn);
   });
 
-  // Update Smart Filters Badges
   const pinnedCount = state.notes.filter(n => n.pinned).length;
   const todoCount = state.notes.filter(n => n.checklist && n.checklist.length > 0).length;
 
@@ -422,7 +527,6 @@ function renderSidebar() {
     btn.classList.toggle('active', state.smartFilter === filter && state.currentFolder === 'all');
   });
 
-  // Update editor folder selector
   noteFolderSelect.innerHTML = '';
   state.folders.filter(f => f.id !== 'all').forEach(f => {
     const opt = document.createElement('option');
@@ -432,7 +536,6 @@ function renderSidebar() {
   });
 }
 
-// Smart filter click handlers
 smartFilterList.addEventListener('click', (e) => {
   const btn = e.target.closest('.smart-item');
   if (!btn) return;
@@ -469,16 +572,13 @@ function renderNotesList() {
     const wrapper = document.createElement('div');
     wrapper.className = 'note-card-wrapper';
 
-    // Swipe trash background action (only visible on swipe)
     const trashAction = document.createElement('div');
     trashAction.className = 'swipe-trash-action';
     trashAction.innerHTML = `<span>Hapus</span>`;
 
-    // Note card
     const card = document.createElement('div');
     card.className = `note-card ${note.id === state.activeNoteId ? 'active' : ''}`;
     
-    // Plain text snippet
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = note.body || '';
     const plainText = (tempDiv.textContent || tempDiv.innerText || 'Belum ada isi catatan...').trim();
@@ -504,7 +604,6 @@ function renderNotesList() {
       </div>
     `;
 
-    // Quick Action: PIN directly from card
     const btnPinCard = card.querySelector('.card-action-pin');
     btnPinCard.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -517,7 +616,6 @@ function renderNotesList() {
       showToast(note.pinned ? 'Catatan disematkan 📌' : 'Sematan dilepas');
     });
 
-    // Quick Action: DELETE directly from card
     const btnDelCard = card.querySelector('.card-action-delete');
     btnDelCard.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -528,7 +626,6 @@ function renderNotesList() {
       });
     });
 
-    // Card Selection
     card.addEventListener('click', () => {
       if (card.dataset.swiped === 'true') return;
       sfx.playPop(750, 0.03);
@@ -545,7 +642,6 @@ function renderNotesList() {
       deleteNote(note.id);
     });
 
-    // Swipe support for touch screens
     setupSwipeGesture(card, wrapper, () => {
       deleteNote(note.id);
     });
@@ -620,7 +716,7 @@ function setupSwipeGesture(card, wrapper, onDelete) {
 }
 
 // =============================================================================
-// 7. EDITOR INTERACTION & FLUID CHECKLIST UX
+// 8. EDITOR INTERACTION & PROGRESS RING
 // =============================================================================
 
 function renderEditor() {
@@ -666,13 +762,30 @@ function renderChecklist(note) {
 
   const total = note.checklist.length;
   const done = note.checklist.filter(c => c.done).length;
+  const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+
+  // Update badge and progress styling
   checklistProgressBadge.textContent = `${done}/${total}`;
+  if (done === total && total > 0) {
+    checklistProgressBadge.textContent = '100% Selesai! 🎉';
+    checklistProgressBadge.classList.add('complete');
+    puddingProgressBar.classList.add('complete');
+  } else {
+    checklistProgressBadge.classList.remove('complete');
+    puddingProgressBar.classList.remove('complete');
+  }
+
+  // Update Circular Progress Ring SVG (circumference: 50.26)
+  const offset = 50.26 - (pct / 100) * 50.26;
+  progressRingCircle.style.strokeDashoffset = offset;
+
+  // Update Fluid Progress Bar
+  puddingProgressBar.style.width = `${pct}%`;
 
   note.checklist.forEach((item, index) => {
     const row = document.createElement('div');
     row.className = `check-item-row ${item.done ? 'done' : ''}`;
 
-    // Circular Checkbox
     const checkbox = document.createElement('button');
     checkbox.className = `apple-checkbox ${item.done ? 'checked' : ''}`;
     checkbox.innerHTML = `
@@ -683,17 +796,32 @@ function renderChecklist(note) {
 
     checkbox.addEventListener('click', () => {
       item.done = !item.done;
+
+      // PUDDING BOUNCE FISIKA ANIMATION
+      checkbox.classList.add('pudding-bounce');
+      row.classList.add('pudding-bounce');
+      setTimeout(() => {
+        checkbox.classList.remove('pudding-bounce');
+        row.classList.remove('pudding-bounce');
+      }, 450);
+
       if (item.done) {
         sfx.playCheck();
+        // Check if all are now done
+        const newDone = note.checklist.filter(c => c.done).length;
+        if (newDone === note.checklist.length) {
+          triggerConfettiBurst();
+          showToast('Hore! Semua checklist selesai! 🎉🍮');
+        }
       } else {
         sfx.playPop(700, 0.03);
       }
+
       triggerAutoSave();
       renderChecklist(note);
       renderNotesList();
     });
 
-    // Input text with fluid Enter/Backspace chaining
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'check-item-input';
@@ -715,7 +843,6 @@ function renderChecklist(note) {
       }
     });
 
-    // Delete item button
     const btnDel = document.createElement('button');
     btnDel.className = 'btn-delete-check-item';
     btnDel.innerHTML = '&times;';
@@ -852,7 +979,7 @@ noteBodyEditor.addEventListener('paste', (e) => {
 });
 
 // =============================================================================
-// 8. ACTIONS: NEW NOTE, DELETE WITH UNDO, FOLDER MANAGEMENT
+// 9. ACTIONS: NEW NOTE, DELETE WITH UNDO, FOLDER MANAGEMENT
 // =============================================================================
 
 function createNewNote() {
@@ -985,7 +1112,7 @@ btnOpenNewFolderModal.addEventListener('click', openFolderModal);
 btnNewFolderInline.addEventListener('click', openFolderModal);
 
 // =============================================================================
-// 9. EVENT LISTENERS & SHORTCUTS
+// 10. EVENT LISTENERS & SHORTCUTS
 // =============================================================================
 
 noteTitleInput.addEventListener('input', triggerAutoSave);
@@ -1142,26 +1269,36 @@ btnPrintNote.addEventListener('click', () => {
 
 // Keyboard Shortcuts
 window.addEventListener('keydown', (e) => {
+  // Esc: Exit Zen mode or close modals
+  if (e.key === 'Escape') {
+    if (state.isZenMode) {
+      toggleZenMode();
+      return;
+    }
+    exportModal.classList.remove('open');
+    confirmModal.classList.remove('open');
+    folderModal.classList.remove('open');
+  }
+
+  // Ctrl+N or Cmd+N: New Note
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'n') {
     e.preventDefault();
     createNewNote();
   }
+
+  // Ctrl+F or Cmd+F: Search
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
     e.preventDefault();
     searchInput.focus();
     searchInput.select();
   }
-  if (e.key === 'Escape') {
-    exportModal.classList.remove('open');
-    confirmModal.classList.remove('open');
-    folderModal.classList.remove('open');
-  }
 });
 
 // =============================================================================
-// 10. INITIALIZATION
+// 11. INITIALIZATION
 // =============================================================================
 applyTheme(state.theme);
+applyFlavor(state.flavor);
 soundLabel.textContent = sfx.enabled ? 'Suara: Nyala' : 'Suara: Mati';
 renderSidebar();
 renderNotesList();

@@ -1,10 +1,10 @@
 /* ==========================================================================
-   iNotes — Authentic Apple macOS & iOS Design System (Pixel-Perfect Polish)
+   Pudding Notes — Authentic Apple Design with Signature Pudding Touches
    ========================================================================== */
 
 :root {
   /* ========================================================================
-     DARK MODE (macOS Sequoia Dark Default)
+     DARK MODE (Default)
      ======================================================================== */
   --bg-app: #121214;
   --sidebar-bg: #18181a;
@@ -16,10 +16,6 @@
   --card-border: rgba(255, 255, 255, 0.07);
   --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 
-  --card-selected-bg: rgba(245, 166, 35, 0.12);
-  --card-selected-border: rgba(245, 166, 35, 0.45);
-  --card-selected-shadow: 0 2px 8px rgba(245, 166, 35, 0.14);
-
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.14);
 
@@ -27,11 +23,14 @@
   --text-secondary: #98989d;
   --text-tertiary: #636366;
 
-  /* Signature Apple Notes Amber / Gold */
+  /* SIGNATURE FLAVORS: Caramel Custard Default (Dark) */
   --accent-gold: #f5a623;
   --accent-gold-hover: #e59819;
   --accent-gold-soft: rgba(245, 166, 35, 0.15);
   --accent-gold-glow: rgba(245, 166, 35, 0.25);
+  --card-selected-bg: rgba(245, 166, 35, 0.12);
+  --card-selected-border: rgba(245, 166, 35, 0.45);
+  --card-selected-shadow: 0 2px 8px rgba(245, 166, 35, 0.14);
 
   --danger: #ff453a;
   --danger-hover: #e03227;
@@ -39,12 +38,10 @@
   --success: #32d74b;
   --success-soft: rgba(50, 215, 75, 0.15);
 
-  /* Window dots */
   --dot-close: #ff5f56;
   --dot-min: #ffbd2e;
   --dot-max: #27c93f;
 
-  /* Spring timings */
   --spring-snappy: cubic-bezier(0.16, 1, 0.3, 1);
   --spring-bounce: cubic-bezier(0.34, 1.45, 0.64, 1);
   --speed-fast: 150ms;
@@ -52,7 +49,7 @@
 }
 
 /* ==========================================================================
-   LIGHT MODE (macOS Sequoia Light Clean Notes)
+   LIGHT MODE (Default)
    ======================================================================== */
 [data-theme="light"] {
   --bg-app: #f2f2f7;
@@ -65,10 +62,6 @@
   --card-border: rgba(0, 0, 0, 0.07);
   --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
 
-  --card-selected-bg: #fff9ed;
-  --card-selected-border: rgba(228, 163, 44, 0.5);
-  --card-selected-shadow: 0 2px 8px rgba(228, 163, 44, 0.12);
-
   --border-subtle: rgba(0, 0, 0, 0.07);
   --border-strong: rgba(0, 0, 0, 0.12);
 
@@ -76,14 +69,76 @@
   --text-secondary: #6e6e73;
   --text-tertiary: #98989d;
 
+  /* Caramel Custard Default (Light) */
   --accent-gold: #d97706;
   --accent-gold-hover: #b45309;
   --accent-gold-soft: rgba(217, 119, 6, 0.1);
   --accent-gold-glow: rgba(217, 119, 6, 0.18);
+  --card-selected-bg: #fff9ed;
+  --card-selected-border: rgba(228, 163, 44, 0.5);
+  --card-selected-shadow: 0 2px 8px rgba(228, 163, 44, 0.12);
 
   --danger: #ff3b30;
   --danger-hover: #d72820;
   --danger-soft: rgba(255, 59, 48, 0.12);
+}
+
+/* ==========================================================================
+   PUDDING FLAVOR THEMES (CIRI KHAS UNIK!)
+   ========================================================================== */
+
+/* 1. MATCHA PUDDING (Zen Japanese Green) */
+[data-flavor="matcha"] {
+  --accent-gold: #38a169;
+  --accent-gold-hover: #2f855a;
+  --accent-gold-soft: rgba(56, 161, 105, 0.15);
+  --accent-gold-glow: rgba(56, 161, 105, 0.25);
+  --card-selected-bg: rgba(56, 161, 105, 0.12);
+  --card-selected-border: rgba(56, 161, 105, 0.45);
+}
+[data-theme="light"][data-flavor="matcha"] {
+  --accent-gold: #2f855a;
+  --accent-gold-hover: #276749;
+  --accent-gold-soft: rgba(47, 133, 90, 0.1);
+  --accent-gold-glow: rgba(47, 133, 90, 0.16);
+  --card-selected-bg: #f0fdf4;
+  --card-selected-border: rgba(47, 133, 90, 0.45);
+}
+
+/* 2. BERRY FLAN (Blush Strawberry Rose) */
+[data-flavor="berry"] {
+  --accent-gold: #e54d6a;
+  --accent-gold-hover: #cc3a56;
+  --accent-gold-soft: rgba(229, 77, 106, 0.15);
+  --accent-gold-glow: rgba(229, 77, 106, 0.25);
+  --card-selected-bg: rgba(229, 77, 106, 0.12);
+  --card-selected-border: rgba(229, 77, 106, 0.45);
+}
+[data-theme="light"][data-flavor="berry"] {
+  --accent-gold: #d63353;
+  --accent-gold-hover: #b82341;
+  --accent-gold-soft: rgba(214, 51, 83, 0.1);
+  --accent-gold-glow: rgba(214, 51, 83, 0.16);
+  --card-selected-bg: #fff1f2;
+  --card-selected-border: rgba(214, 51, 83, 0.45);
+}
+
+/* 3. DARK CHOCO (Espresso Cream Cocoa) */
+[data-flavor="choco"] {
+  --accent-gold: #c68a4c;
+  --accent-gold-hover: #b27638;
+  --accent-gold-soft: rgba(198, 138, 76, 0.16);
+  --accent-gold-glow: rgba(198, 138, 76, 0.25);
+  --card-selected-bg: rgba(198, 138, 76, 0.14);
+  --card-selected-border: rgba(198, 138, 76, 0.45);
+}
+[data-theme="light"][data-flavor="choco"] {
+  --accent-gold: #935824;
+  --accent-gold-hover: #7b4618;
+  --accent-gold-soft: rgba(147, 88, 36, 0.1);
+  --accent-gold-glow: rgba(147, 88, 36, 0.16);
+  --card-selected-bg: #fbf5f0;
+  --card-selected-border: rgba(147, 88, 36, 0.45);
 }
 
 /* Base Reset & Typography */
@@ -113,7 +168,7 @@ html, body {
   pointer-events: none;
   z-index: 0;
   opacity: 0.16;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease, background 0.5s ease;
 }
 
 .glow-1 {
@@ -127,7 +182,7 @@ html, body {
 .glow-2 {
   width: 480px;
   height: 480px;
-  background: radial-gradient(circle, rgba(94, 92, 230, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(94, 92, 230, 0.1) 0%, transparent 70%);
   bottom: -100px;
   right: 5%;
 }
@@ -155,10 +210,86 @@ html, body {
   grid-template-columns: 0px 320px 1fr;
 }
 
-/* Frosted glass backdrop */
+/* Frosted glass */
 .frosted {
   backdrop-filter: blur(28px) saturate(180%);
   -webkit-backdrop-filter: blur(28px) saturate(180%);
+}
+
+/* ==========================================================================
+   PUDDING BOUNCE FISIKA EFEK (CIRI KHAS UNIK!)
+   ========================================================================== */
+@keyframes pudding-jiggle {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.15, 0.88); }
+  50% { transform: scale(0.92, 1.1); }
+  75% { transform: scale(1.05, 0.97); }
+  100% { transform: scale(1); }
+}
+
+.pudding-bounce {
+  animation: pudding-jiggle 450ms var(--spring-bounce);
+}
+
+/* ==========================================================================
+   ZEN / FOCUS MODE (CIRI KHAS UNIK!)
+   ========================================================================== */
+.app-container.zen-mode .split-view {
+  grid-template-columns: 0px 0px 1fr !important;
+}
+
+.app-container.zen-mode .sidebar,
+.app-container.zen-mode .notes-panel {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app-container.zen-mode .editor-header {
+  border-bottom-color: transparent;
+  background: transparent;
+}
+
+.app-container.zen-mode .editor-actions-right,
+.app-container.zen-mode .editor-toolbar {
+  opacity: 0.15;
+  transition: opacity 200ms ease;
+}
+
+.app-container.zen-mode .editor-header:hover .editor-actions-right,
+.app-container.zen-mode .editor-header:hover .editor-toolbar {
+  opacity: 1;
+}
+
+.zen-exit-pill {
+  position: fixed;
+  top: 14px;
+  right: 20px;
+  z-index: 100;
+  background: var(--card-bg);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--accent-gold);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-12px);
+  transition: all 250ms var(--spring-bounce);
+}
+
+.zen-exit-pill:hover {
+  background: var(--card-hover);
+  transform: translateY(0) scale(1.03);
+}
+
+.app-container.zen-mode .zen-exit-pill {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 /* ==========================================================================
@@ -208,20 +339,6 @@ html, body {
 .brand {
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-
-.apple-badge {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #f5a623 0%, #e09212 100%);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  box-shadow: 0 2px 5px rgba(245, 166, 35, 0.25);
 }
 
 .brand-text {
@@ -248,6 +365,7 @@ html, body {
   text-transform: uppercase;
   letter-spacing: 0.6px;
   color: var(--text-tertiary);
+  margin-bottom: 4px;
 }
 
 .btn-icon-tiny {
@@ -355,6 +473,39 @@ html, body {
   background: var(--accent-gold-soft);
 }
 
+/* Flavor Picker Pills */
+.flavor-pills-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.flavor-pill {
+  padding: 5px 6px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--speed-fast) var(--spring-snappy);
+}
+
+.flavor-pill:hover {
+  background: var(--card-hover);
+  color: var(--text-primary);
+}
+
+.flavor-pill.active {
+  background: var(--accent-gold-soft);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
 /* Sidebar Footer */
 .sidebar-footer {
   margin-top: auto;
@@ -451,7 +602,6 @@ html, body {
   color: var(--text-primary);
 }
 
-/* Apple Notes "+ Baru" Button */
 .btn-create {
   display: flex;
   align-items: center;
@@ -608,7 +758,6 @@ html, body {
   background: var(--card-hover);
 }
 
-/* ACTIVE / SELECTED CARD: Apple Notes Warm Champagne Tint */
 .note-card.active {
   background: var(--card-selected-bg) !important;
   border-color: var(--card-selected-border) !important;
@@ -725,7 +874,7 @@ html, body {
 }
 
 /* ==========================================================================
-   COLUMN 3: NOTE EDITOR (Unified 52px Header + Centered Canvas)
+   COLUMN 3: NOTE EDITOR
    ========================================================================== */
 .editor-panel {
   background: var(--editor-bg);
@@ -866,7 +1015,7 @@ html, body {
 }
 
 /* ==========================================================================
-   CENTERED DOCUMENT CANVAS (NEAT & BALANCED LAYOUT)
+   CENTERED DOCUMENT CANVAS
    ========================================================================== */
 .editor-content-wrap {
   flex: 1;
@@ -934,13 +1083,17 @@ html, body {
   opacity: 0.5;
 }
 
-/* Checklist Section */
+/* ==========================================================================
+   CHECKLIST SECTION & PROGRESS RING (CIRI KHAS UNIK!)
+   ========================================================================== */
 .checklist-container {
   background: var(--notes-bg);
   border: 1px solid var(--border-subtle);
   border-radius: 11px;
   padding: 12px 14px;
   margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
 }
 
 .checklist-header {
@@ -958,6 +1111,28 @@ html, body {
   gap: 8px;
 }
 
+/* Progress Ring SVG */
+.progress-ring-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--accent-gold);
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring-circle-bg {
+  color: rgba(128, 128, 128, 0.2);
+}
+
+.progress-ring-circle {
+  transition: stroke-dashoffset 300ms var(--spring-snappy);
+}
+
 .checklist-title {
   font-size: 12.5px;
   font-weight: 600;
@@ -971,6 +1146,12 @@ html, body {
   border-radius: 10px;
   background: var(--accent-gold-soft);
   color: var(--accent-gold);
+  transition: all 200ms ease;
+}
+
+.checklist-badge.complete {
+  background: var(--success);
+  color: #fff;
 }
 
 .checklist-header-actions {
@@ -990,6 +1171,28 @@ html, body {
   color: var(--accent-gold);
   padding: 2px 7px;
   background: transparent;
+}
+
+/* Fluid Progress Bar */
+.pudding-progress-bar-wrap {
+  width: 100%;
+  height: 3px;
+  background: rgba(128, 128, 128, 0.15);
+  border-radius: 3px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.pudding-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent-gold);
+  border-radius: 3px;
+  transition: width 350ms var(--spring-snappy), background 300ms ease;
+}
+
+.pudding-progress-bar.complete {
+  background: var(--success);
 }
 
 .checklist-items {
@@ -1119,6 +1322,37 @@ html, body {
 
 .note-body-editor li {
   margin-bottom: 4px;
+}
+
+/* ==========================================================================
+   CONFETTI CELEBRATION (CIRI KHAS UNIK!)
+   ========================================================================== */
+.pudding-confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  overflow: hidden;
+}
+
+.confetti-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: confetti-fall 1.4s ease-out forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(400px) rotate(720deg) scale(0.4);
+  }
 }
 
 /* ==========================================================================
@@ -1434,7 +1668,7 @@ html, body {
 }
 
 /* ==========================================================================
-   RESPONSIVE DESIGN (iPad / iPhone / Mobile)
+   RESPONSIVE DESIGN
    ========================================================================== */
 @media (max-width: 900px) {
   .split-view {

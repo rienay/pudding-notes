@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id" data-theme="dark">
+<html lang="id" data-theme="dark" data-flavor="caramel">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
@@ -24,6 +24,14 @@
       <!-- Background Ambient Glow -->
       <div class="ambient-glow glow-1"></div>
       <div class="ambient-glow glow-2"></div>
+
+      <!-- Floating Zen Mode Exit Pill -->
+      <button class="zen-exit-pill" id="btnExitZen" title="Keluar Zen Mode (Esc)">
+        <span>✕ Keluar Zen Mode (Esc)</span>
+      </button>
+
+      <!-- Celebratory Confetti Container -->
+      <div class="pudding-confetti-container" id="puddingConfetti"></div>
 
       <!-- Main Shell (3 Columns: Folders | Notes List | Editor) -->
       <div class="split-view" id="splitView">
@@ -94,6 +102,17 @@
             </nav>
           </div>
 
+          <!-- Section: Pudding Mood Flavors (Ciri Khas Unik!) -->
+          <div class="sidebar-section flavor-section">
+            <div class="section-title">Rasa Pudding</div>
+            <div class="flavor-pills-row" id="flavorPicker">
+              <button class="flavor-pill active" data-flavor="caramel" title="Caramel Custard">🍮 Caramel</button>
+              <button class="flavor-pill" data-flavor="matcha" title="Matcha Pudding">🍵 Matcha</button>
+              <button class="flavor-pill" data-flavor="berry" title="Berry Flan">🍓 Berry</button>
+              <button class="flavor-pill" data-flavor="choco" title="Dark Choco">🍫 Choco</button>
+            </div>
+          </div>
+
           <!-- Bottom Sidebar Toolbar -->
           <div class="sidebar-footer">
             <button class="btn-subtle" id="btnToggleTheme" title="Ganti Tema (Gelap/Terang)">
@@ -102,7 +121,7 @@
               <span id="themeLabel">Gelap</span>
             </button>
 
-            <button class="btn-subtle" id="btnToggleSound" title="Suara Haptic Apple">
+            <button class="btn-subtle" id="btnToggleSound" title="Suara Haptic Pudding">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                 <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -199,7 +218,7 @@
                 <span>+ Tugas</span>
               </button>
               <button class="tool-btn" data-action="bullet" title="Daftar Poin">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="8" y1="6" x2="21" y2="6"></line>
                   <line x1="8" y1="12" x2="21" y2="12"></line>
                   <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -211,6 +230,16 @@
             </div>
 
             <div class="editor-actions-right">
+              <!-- Focus / Zen Mode Button (Ciri Khas!) -->
+              <button class="icon-btn" id="btnToggleZen" title="Focus / Zen Mode (Layar Penuh)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <polyline points="9 21 3 21 3 15"></polyline>
+                  <line x1="21" y1="3" x2="14" y2="10"></line>
+                  <line x1="3" y1="21" x2="10" y2="14"></line>
+                </svg>
+              </button>
+
               <button class="icon-btn" id="btnPinNote" title="Sematkan Catatan">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="12" y1="17" x2="12" y2="22"></line>
@@ -255,11 +284,17 @@
               <!-- Note Title -->
               <input type="text" class="note-title-input" id="noteTitleInput" placeholder="Judul Catatan..." />
 
-              <!-- Interactive Checklist Section -->
+              <!-- Interactive Checklist Section (With Progress Ring & Bar!) -->
               <div class="checklist-container" id="checklistSection">
                 <div class="checklist-header">
                   <div class="checklist-title-wrap">
-                    <span class="checklist-title">Checklist & Tugas</span>
+                    <div class="progress-ring-wrap" title="Progress Checklist">
+                      <svg class="progress-ring" width="22" height="22">
+                        <circle class="progress-ring-circle-bg" stroke="currentColor" stroke-width="2.5" fill="transparent" r="8" cx="11" cy="11"/>
+                        <circle class="progress-ring-circle" id="progressRingCircle" stroke="currentColor" stroke-width="2.5" stroke-dasharray="50.26" stroke-dashoffset="50.26" stroke-linecap="round" fill="transparent" r="8" cx="11" cy="11"/>
+                      </svg>
+                    </div>
+                    <span class="checklist-title">Checklist &amp; Tugas</span>
                     <span class="checklist-badge" id="checklistProgressBadge">0/0</span>
                   </div>
                   <div class="checklist-header-actions">
@@ -267,6 +302,12 @@
                     <button class="btn-subtle btn-add-check-item" id="btnAddCheckItem">+ Item</button>
                   </div>
                 </div>
+
+                <!-- Fluid Progress Bar -->
+                <div class="pudding-progress-bar-wrap">
+                  <div class="pudding-progress-bar" id="puddingProgressBar"></div>
+                </div>
+
                 <div class="checklist-items" id="checklistItemsList">
                   <!-- Checklist items injected via JS -->
                 </div>
