@@ -82,8 +82,8 @@ const DEFAULT_FOLDERS = [
 const INITIAL_NOTES = [
   {
     id: 'note-1',
-    title: 'Selamat Datang di iNotes ✨',
-    body: '<div>iNotes didesain dengan panduan <b>Apple Human Interface</b> &amp; <b>Fluid Motion</b>:</div><br><div>• Tampilan rapi, simetris, dan terpusat (*centered reading canvas*).</div><div>• Tekan <b>Enter</b> di checklist untuk otomatis membuat baris baru.</div><div>• Hover di kartu catatan untuk aksi cepat (Pin &amp; Hapus).</div><div>• Dilengkapi fitur <b>Batalkan / Undo</b> jika tak sengaja menghapus.</div>',
+    title: 'Selamat Datang di Pudding Notes 🍮✨',
+    body: '<div><b>Pudding Notes</b> didesain dengan sentuhan lembut, elegan, dan estetik Apple Human Interface:</div><br><div>• Tampilan rapi, simetris, dan terpusat (*centered reading canvas*).</div><div>• Tekan <b>Enter</b> di checklist untuk otomatis membuat baris baru.</div><div>• Hover di kartu catatan untuk aksi cepat (Pin &amp; Hapus).</div><div>• Dilengkapi fitur <b>Batalkan / Undo</b> jika tak sengaja menghapus.</div>',
     folder: 'ideas',
     pinned: true,
     checklist: [
