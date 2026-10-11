@@ -210,6 +210,26 @@ html, body {
   grid-template-columns: 0px 320px 1fr;
 }
 
+.split-view.sidebar-collapsed .sidebar {
+  opacity: 0;
+  pointer-events: none;
+  border-right-color: transparent;
+  padding: 0;
+}
+
+.split-view.panels-collapsed {
+  grid-template-columns: 0px 0px 1fr;
+}
+
+.split-view.panels-collapsed .sidebar,
+.split-view.panels-collapsed .notes-panel {
+  opacity: 0;
+  pointer-events: none;
+  border-right-color: transparent;
+  padding: 0;
+  display: none;
+}
+
 /* Frosted glass */
 .frosted {
   backdrop-filter: blur(28px) saturate(180%);
@@ -1037,6 +1057,12 @@ html, body {
   color: var(--accent-gold);
 }
 
+.tool-btn-hand.active {
+  background: var(--accent-gold);
+  color: #fff !important;
+  box-shadow: 0 1px 4px var(--accent-gold-glow);
+}
+
 .tool-divider {
   width: 1px;
   height: 14px;
@@ -1087,22 +1113,51 @@ html, body {
 }
 
 /* ==========================================================================
-   CENTERED DOCUMENT CANVAS
+   EXPANSIVE FIGMA-STYLE CANVAS (KANAN KIRI FULL & BEBAS DIGESER)
    ========================================================================== */
 .editor-content-wrap {
   flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  display: flex;
-  justify-content: center;
+  overflow: auto;
+  display: block;
+  background: var(--card-bg);
+  padding: 0;
+  scroll-behavior: auto;
+  user-select: text;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+
+.editor-content-wrap.is-panning {
+  cursor: grabbing !important;
+  user-select: none !important;
+}
+
+.editor-content-wrap.is-panning * {
+  cursor: grabbing !important;
+  user-select: none !important;
+}
+
+.editor-content-wrap.hand-tool-active {
+  cursor: grab !important;
+}
+
+.editor-content-wrap.hand-tool-active * {
+  cursor: grab !important;
 }
 
 .editor-doc-canvas {
-  width: 100%;
-  max-width: 720px;
-  padding: 32px 32px 80px 32px;
+  width: max(100%, 2000px);
+  min-width: 100%;
+  min-height: max(100%, 1600px);
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 44px 80px 500px 80px;
   display: flex;
   flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
 }
 
 .note-meta-header {
@@ -1140,6 +1195,7 @@ html, body {
 
 .note-title-input {
   width: 100%;
+  max-width: 900px;
   border: none;
   background: transparent;
   font-size: 27px;
@@ -1147,7 +1203,8 @@ html, body {
   letter-spacing: -0.5px;
   color: var(--text-primary);
   outline: none;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
+  box-sizing: border-box;
 }
 
 .note-title-input::placeholder {
@@ -1166,6 +1223,7 @@ html, body {
   margin-bottom: 22px;
   position: relative;
   overflow: hidden;
+  max-width: 900px;
 }
 
 .checklist-header {
@@ -1360,11 +1418,12 @@ html, body {
 .note-body-editor {
   flex: 1;
   outline: none;
-  font-size: 14.5px;
-  line-height: 1.7;
+  font-size: 15.5px;
+  line-height: 32px;
   color: var(--text-primary);
   user-select: text;
-  min-height: 280px;
+  min-height: 520px;
+  max-width: 900px;
   word-break: break-word;
 }
 
@@ -1802,4 +1861,1489 @@ html, body {
   .card-quick-actions {
     opacity: 1;
   }
+}
+
+/* ==========================================================================
+   12. STABILO / HIGHLIGHTER TOOL STYLING
+   ========================================================================== */
+.stabilo-tool-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tool-btn-stabilo {
+  gap: 5px;
+}
+
+.stabilo-icon-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fef08a;
+  box-shadow: 0 0 5px rgba(254, 240, 138, 0.7);
+  display: inline-block;
+}
+
+.tool-caret {
+  font-size: 8px;
+  opacity: 0.7;
+  margin-left: -1px;
+}
+
+.stabilo-palette {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 50;
+  min-width: 170px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: stabilo-pop-in 180ms var(--spring-bounce);
+}
+
+.stabilo-palette.open {
+  display: flex;
+}
+
+@keyframes stabilo-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.stabilo-palette-title {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stabilo-palette-swatches {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.swatch-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 150ms var(--spring-bounce), border-color 150ms ease;
+  position: relative;
+}
+
+.swatch-btn:hover {
+  transform: scale(1.22);
+}
+
+.swatch-btn.active {
+  border-color: var(--text-primary);
+  transform: scale(1.15);
+}
+
+.swatch-btn.hl-yellow { background: #fef08a; }
+.swatch-btn.hl-green { background: #bbf7d0; }
+.swatch-btn.hl-pink { background: #fbcfe8; }
+.swatch-btn.hl-blue { background: #bae6fd; }
+.swatch-btn.hl-orange { background: #fed7aa; }
+.swatch-btn.hl-purple { background: #e9d5ff; }
+
+.btn-clear-stabilo {
+  background: var(--notes-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.btn-clear-stabilo:hover {
+  background: var(--card-hover);
+  color: var(--text-primary);
+}
+
+/* REALISTIC AUTHENTIC STABILO HIGHLIGHTS (PASTEL ORGANIC) */
+.pudding-stabilo {
+  display: inline;
+  padding: 0.15em 0.38em;
+  margin: 0 0.06em;
+  border-radius: 4px 7px 3px 6px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  font-weight: 500;
+  color: #1a1a1e !important;
+  transition: background 200ms ease;
+  text-shadow: none;
+}
+
+[data-theme="dark"] .pudding-stabilo {
+  color: #111113 !important;
+}
+
+.pudding-stabilo.hl-yellow {
+  background: linear-gradient(104deg, rgba(254, 240, 138, 0.92) 0%, rgba(254, 240, 138, 0.96) 50%, rgba(254, 240, 138, 0.88) 100%);
+}
+
+.pudding-stabilo.hl-green {
+  background: linear-gradient(104deg, rgba(187, 247, 208, 0.92) 0%, rgba(187, 247, 208, 0.96) 50%, rgba(187, 247, 208, 0.88) 100%);
+}
+
+.pudding-stabilo.hl-pink {
+  background: linear-gradient(104deg, rgba(251, 207, 232, 0.92) 0%, rgba(251, 207, 232, 0.96) 50%, rgba(251, 207, 232, 0.88) 100%);
+}
+
+.pudding-stabilo.hl-blue {
+  background: linear-gradient(104deg, rgba(186, 230, 253, 0.92) 0%, rgba(186, 230, 253, 0.96) 50%, rgba(186, 230, 253, 0.88) 100%);
+}
+
+.pudding-stabilo.hl-orange {
+  background: linear-gradient(104deg, rgba(254, 215, 170, 0.92) 0%, rgba(254, 215, 170, 0.96) 50%, rgba(254, 215, 170, 0.88) 100%);
+}
+
+.pudding-stabilo.hl-purple {
+  background: linear-gradient(104deg, rgba(233, 213, 255, 0.92) 0%, rgba(233, 213, 255, 0.96) 50%, rgba(233, 213, 255, 0.88) 100%);
+}
+
+/* ==========================================================================
+   13. KOSTUM BUKU & KERTAS JURNAL
+   ========================================================================== */
+.btn-book-costume {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--accent-gold-soft);
+  color: var(--accent-gold);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--speed-fast) var(--spring-snappy);
+}
+
+.btn-book-costume:hover {
+  background: var(--accent-gold-soft);
+  border-color: var(--accent-gold);
+  transform: translateY(-1px);
+}
+
+.btn-book-costume:active {
+  transform: scale(0.96);
+}
+
+/* NOTE CANVAS ENHANCEMENTS FOR BOOK COSTUME (BUKU FISIK REALISTIS) */
+.editor-doc-canvas {
+  position: relative;
+  background: var(--card-bg);
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  box-shadow: none;
+  transition: background 250ms ease;
+  min-height: max(100%, 1600px);
+}
+
+/* 1. GAYA JILID / SAMPUL BUKU */
+
+/* Mode A: Spiral Binder */
+.editor-doc-canvas.book-spiral {
+  padding-left: 54px;
+}
+
+.book-spiral-spine {
+  display: none;
+  position: absolute;
+  top: 20px;
+  bottom: 0;
+  left: 12px;
+  width: 24px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.editor-doc-canvas.book-spiral .book-spiral-spine {
+  display: block;
+}
+
+/* Spiral Metal Rings generated via CSS loop */
+.editor-doc-canvas.book-spiral .book-spiral-spine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    /* Hole punch dark inside */
+    radial-gradient(circle at 12px 14px, rgba(0,0,0,0.55) 5px, transparent 6px),
+    /* Metallic Wire coil highlight */
+    linear-gradient(to right, #6b7280 0%, #d1d5db 45%, #9ca3af 70%, #4b5563 100%);
+  background-size: 24px 34px, 14px 34px;
+  background-repeat: repeat-y;
+  background-position: center top, left 4px top;
+  filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.3));
+}
+
+/* Mode B: Diary Kulit (Leather Stitched Notebook) */
+.editor-doc-canvas.book-diary {
+  border: 1.5px solid rgba(217, 119, 6, 0.35);
+  border-bottom: none;
+  outline: 1.5px dashed rgba(217, 119, 6, 0.32);
+  outline-offset: -8px;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 
+    0 0 0 4px var(--card-bg),
+    0 16px 44px rgba(0, 0, 0, 0.22);
+}
+
+/* Mode C: Scrapbook Kraft */
+.editor-doc-canvas.book-scrapbook {
+  border: 2px dashed rgba(245, 166, 35, 0.35);
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  position: relative;
+}
+
+.editor-doc-canvas.book-scrapbook::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 32px;
+  width: 90px;
+  height: 24px;
+  background: rgba(245, 166, 35, 0.45);
+  border-left: 2px dashed rgba(255,255,255,0.4);
+  border-right: 2px dashed rgba(255,255,255,0.4);
+  transform: rotate(-3deg);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  z-index: 12;
+}
+
+/* Mode D: Papan Klip (Clipboard) */
+.book-clipboard-clip {
+  display: none;
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 30px;
+  background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
+  border-radius: 6px 6px 3px 3px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 15;
+  pointer-events: none;
+}
+
+.book-clipboard-clip::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 12px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.35);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.editor-doc-canvas.book-clipboard .book-clipboard-clip {
+  display: block;
+}
+
+.editor-doc-canvas.book-clipboard {
+  margin-top: 36px;
+  padding-top: 38px;
+}
+
+/* Mode E: Minimalis Modern */
+.editor-doc-canvas.book-clean {
+  border: 1px solid var(--border-subtle);
+}
+
+/* 2. POLA & TEKSTUR KERTAS */
+
+/* Kertas Bergaris (Lined Paper - Garis Buku Realistis & Margin Merah) */
+.editor-doc-canvas.paper-lined {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 31px,
+    rgba(96, 165, 250, 0.22) 31px,
+    rgba(96, 165, 250, 0.22) 32px
+  );
+  background-repeat: repeat-y;
+  background-size: 100% 32px;
+}
+
+[data-theme="dark"] .editor-doc-canvas.paper-lined {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 31px,
+    rgba(255, 255, 255, 0.08) 31px,
+    rgba(255, 255, 255, 0.08) 32px
+  );
+  background-repeat: repeat-y;
+  background-size: 100% 32px;
+}
+
+/* Red Margin Line (Garis Pembatas Buku Catatan Tradisional) */
+.editor-doc-canvas.paper-lined::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 64px;
+  width: 1.5px;
+  background: rgba(244, 63, 94, 0.22);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.editor-doc-canvas.paper-lined.book-spiral::before {
+  left: 82px;
+}
+
+/* Kotak-kotak Grid */
+.editor-doc-canvas.paper-grid {
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, rgba(96, 165, 250, 0.13) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(96, 165, 250, 0.13) 1px, transparent 1px);
+}
+
+[data-theme="dark"] .editor-doc-canvas.paper-grid {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+}
+
+/* Titik-titik Bullet Journal (Dot Grid) */
+.editor-doc-canvas.paper-dots {
+  background-size: 22px 22px;
+  background-image: radial-gradient(rgba(96, 165, 250, 0.28) 1.2px, transparent 1.2px);
+}
+
+[data-theme="dark"] .editor-doc-canvas.paper-dots {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1.2px, transparent 1.2px);
+}
+
+/* Kertas Polos Krem (Warm Cream) */
+.editor-doc-canvas.paper-cream {
+  background-color: #faf6ed !important;
+}
+
+[data-theme="dark"] .editor-doc-canvas.paper-cream {
+  background-color: #211f1a !important;
+}
+
+/* Vintage Kraft */
+.editor-doc-canvas.paper-kraft {
+  background-color: #ede2cf !important;
+}
+
+[data-theme="dark"] .editor-doc-canvas.paper-kraft {
+  background-color: #28211b !important;
+}
+
+/* Putih Polos */
+.editor-doc-canvas.paper-plain {
+  background-image: none !important;
+}
+
+/* 3. PITA PEMBATAS BUKU (BOOKMARK RIBBON) */
+.book-ribbon {
+  position: absolute;
+  top: 0;
+  right: 42px;
+  width: 22px;
+  height: 62px;
+  z-index: 12;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  transition: all 250ms var(--spring-bounce);
+}
+
+.book-ribbon.ribbon-none {
+  display: none !important;
+}
+
+.book-ribbon.ribbon-caramel { background: #d97706; }
+.book-ribbon.ribbon-ruby { background: #e11d48; }
+.book-ribbon.ribbon-matcha { background: #16a34a; }
+.book-ribbon.ribbon-berry { background: #ec4899; }
+
+/* Triangle notch at the bottom of the ribbon */
+.ribbon-tail {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-bottom: 9px solid var(--card-bg);
+}
+
+/* ==========================================================================
+   14. SCRAPBOOK STAGE (DRAGGABLE & ROTATABLE STICKERS / POLAROIDS)
+   ========================================================================== */
+.scrapbook-stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 8;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.scrapbook-item {
+  position: absolute;
+  pointer-events: auto;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transform-origin: center center;
+  transition: box-shadow 150ms ease, opacity 150ms ease;
+}
+
+.scrapbook-item.is-dragging {
+  cursor: grabbing !important;
+  z-index: 99 !important;
+}
+
+.scrapbook-item:hover,
+.scrapbook-item.is-selected {
+  z-index: 30;
+}
+
+/* Controls Layer */
+.sticker-controls {
+  position: absolute;
+  inset: -14px;
+  border: 1.5px dashed transparent;
+  border-radius: 12px;
+  pointer-events: none;
+  transition: border-color 150ms ease;
+}
+
+.scrapbook-item.is-selected .sticker-controls,
+.scrapbook-item:hover .sticker-controls {
+  border-color: var(--accent-gold);
+}
+
+/* Rotasi Knob (Pegangan Putar 360°) */
+.sticker-rotate-knob {
+  position: absolute;
+  top: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--card-bg);
+  border: 1.8px solid var(--accent-gold);
+  color: var(--accent-gold);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  pointer-events: auto;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22);
+  font-size: 11px;
+  transition: transform 120ms var(--spring-bounce), background 120ms ease;
+}
+
+.sticker-rotate-knob:hover {
+  background: var(--accent-gold);
+  color: #fff;
+  transform: translateX(-50%) scale(1.15);
+}
+
+.sticker-rotate-knob:active {
+  cursor: grabbing;
+}
+
+.scrapbook-item.is-selected .sticker-rotate-knob,
+.scrapbook-item:hover .sticker-rotate-knob {
+  display: flex;
+}
+
+/* Connector line to knob */
+.sticker-rotate-knob::after {
+  content: "";
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  width: 1.5px;
+  height: 10px;
+  background: var(--accent-gold);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* Action Toolbar on Sticker */
+.sticker-action-bar {
+  position: absolute;
+  top: -68px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card-bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  padding: 3px 6px;
+  display: none;
+  align-items: center;
+  gap: 3px;
+  pointer-events: auto;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  white-space: nowrap;
+}
+
+.scrapbook-item.is-selected .sticker-action-bar {
+  display: flex;
+}
+
+.sticker-act-btn {
+  background: transparent;
+  border: none;
+  font-size: 11px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 120ms ease;
+}
+
+.sticker-act-btn:hover {
+  background: var(--card-hover);
+  color: var(--accent-gold);
+}
+
+.sticker-act-btn.btn-del-sticker:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+/* Resize knob */
+.sticker-resize-knob {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  border: 2px solid #fff;
+  display: none;
+  cursor: se-resize;
+  pointer-events: auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.scrapbook-item.is-selected .sticker-resize-knob,
+.scrapbook-item:hover .sticker-resize-knob {
+  display: block;
+}
+
+/* STYLES FOR STICKERS & PHOTOS */
+
+/* 1. Polaroid Frame */
+.sticker-visual-wrap.style-polaroid {
+  background: #ffffff;
+  padding: 8px 8px 18px 8px;
+  border-radius: 4px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.sticker-visual-wrap.style-polaroid img {
+  border-radius: 2px;
+  display: block;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.washi-tape-strip {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 52px;
+  height: 16px;
+  background: rgba(254, 240, 138, 0.75);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  border-left: 2px dashed rgba(255,255,255,0.4);
+  border-right: 2px dashed rgba(255,255,255,0.4);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.polaroid-caption {
+  font-size: 11px;
+  font-weight: 500;
+  color: #374151;
+  margin-top: 6px;
+  font-family: cursive, sans-serif;
+  text-align: center;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 2. Cutout Sticker */
+.sticker-visual-wrap.style-cutout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.18));
+}
+
+.sticker-visual-wrap.style-cutout img {
+  border: 3.5px solid #ffffff;
+  border-radius: 14px;
+  display: block;
+  pointer-events: none;
+  background: #ffffff;
+}
+
+/* 3. Pin Kertas */
+.sticker-visual-wrap.style-pin {
+  position: relative;
+  background: #ffffff;
+  padding: 4px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.sticker-visual-wrap.style-pin img {
+  border-radius: 6px;
+  display: block;
+  pointer-events: none;
+}
+
+.pushpin-icon {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+/* 4. Clean */
+.sticker-visual-wrap.style-clean {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sticker-visual-wrap.style-clean img {
+  display: block;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   15. SIDE DRAWER KOSTUM BUKU (BUKA KE SAMPING, TANPA BLUR)
+   ========================================================================== */
+.book-side-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 375px;
+  max-width: 90vw;
+  background: var(--sidebar-bg);
+  border-left: 1px solid var(--border-strong);
+  box-shadow: -12px 0 38px rgba(0, 0, 0, 0.28);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(105%);
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+}
+
+[data-theme="light"] .book-side-drawer {
+  background: rgba(248, 248, 250, 0.94);
+  box-shadow: -6px 0 28px rgba(0, 0, 0, 0.09);
+}
+
+.book-side-drawer.open {
+  transform: translateX(0);
+}
+
+/* Adjust editor content layout when drawer is open on wide screens */
+@media (min-width: 1100px) {
+  .split-view.drawer-open .editor-content-wrap {
+    padding-right: 380px;
+    transition: padding-right 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+.side-drawer-header {
+  height: 52px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  background: var(--notes-bg);
+}
+
+.side-drawer-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.side-drawer-icon {
+  font-size: 18px;
+}
+
+.side-drawer-title-wrap h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.side-drawer-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 150ms ease;
+}
+
+.side-drawer-close:hover {
+  background: var(--card-hover);
+  color: var(--danger);
+}
+
+.side-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.side-drawer-hint {
+  font-size: 11.5px;
+  color: var(--accent-gold);
+  background: var(--accent-gold-soft);
+  padding: 8px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--accent-gold-soft);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.side-drawer-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--notes-bg);
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.btn-drawer-done {
+  padding: 7px 18px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.sticker-picker-modal {
+  max-width: 480px;
+}
+
+.modal-tab-row {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+}
+
+.modal-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--speed-fast) var(--spring-snappy);
+}
+
+.modal-tab-btn:hover {
+  color: var(--text-primary);
+  background: var(--card-hover);
+}
+
+.modal-tab-btn.active {
+  color: var(--accent-gold);
+  background: var(--accent-gold-soft);
+}
+
+.modal-tab-content {
+  display: none;
+}
+
+.modal-tab-content.active {
+  display: block;
+}
+
+/* Dropzone */
+.image-upload-dropzone {
+  border: 2px dashed var(--border-strong);
+  border-radius: 12px;
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 180ms ease;
+  background: var(--notes-bg);
+}
+
+.image-upload-dropzone:hover {
+  border-color: var(--accent-gold);
+  background: var(--accent-gold-soft);
+}
+
+.dropzone-icon {
+  font-size: 30px;
+  margin-bottom: 6px;
+}
+
+.dropzone-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.dropzone-hint {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.input-with-button-row {
+  display: flex;
+  gap: 8px;
+}
+
+/* Preview Area */
+.upload-preview-area {
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.preview-badge {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.preview-polaroid-frame {
+  background: #ffffff;
+  padding: 6px 6px 14px 6px;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  max-width: 140px;
+  transform: rotate(-3deg);
+}
+
+.preview-polaroid-frame img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* Style selector buttons */
+.style-selector-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.style-choice-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: 8px;
+  background: var(--notes-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--speed-fast) var(--spring-snappy);
+}
+
+.style-choice-btn:hover {
+  background: var(--card-hover);
+  color: var(--text-primary);
+}
+
+.style-choice-btn.active {
+  border-color: var(--accent-gold);
+  background: var(--accent-gold-soft);
+  color: var(--accent-gold);
+}
+
+.choice-icon {
+  font-size: 16px;
+}
+
+/* Sticker Grid */
+.stickers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 4px 2px;
+}
+
+.sticker-pick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 6px;
+  border-radius: 10px;
+  background: var(--notes-bg);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: transform 180ms var(--spring-bounce), background 150ms ease, border-color 150ms ease;
+}
+
+.sticker-pick-card:hover {
+  transform: scale(1.1) translateY(-2px);
+  background: var(--card-hover);
+  border-color: var(--accent-gold);
+}
+
+.sticker-pick-card:active {
+  transform: scale(0.95);
+}
+
+.sticker-pick-icon {
+  font-size: 32px;
+}
+
+.sticker-pick-name {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Costume Section Cards */
+.costume-section {
+  margin-bottom: 18px;
+}
+
+.costume-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  letter-spacing: -0.2px;
+}
+
+.costume-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.costume-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px 8px;
+  border-radius: 10px;
+  background: var(--notes-bg);
+  border: 1.5px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all var(--speed-fast) var(--spring-snappy);
+}
+
+.costume-card:hover {
+  background: var(--card-hover);
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+.costume-card.active {
+  border-color: var(--accent-gold);
+  background: var(--card-selected-bg);
+  box-shadow: 0 2px 8px var(--accent-gold-soft);
+}
+
+.costume-preview-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.costume-card-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.costume-card-sub {
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+
+/* Paper Preview Mini Squares */
+.paper-preview-mini {
+  width: 44px;
+  height: 28px;
+  border-radius: 5px;
+  border: 1px solid var(--border-strong);
+  margin-bottom: 6px;
+  background-color: var(--card-bg);
+}
+
+.paper-preview-mini.pattern-lined {
+  background-image: repeating-linear-gradient(transparent, transparent 6px, #93c5fd 6px, #93c5fd 7px);
+}
+
+.paper-preview-mini.pattern-grid {
+  background-size: 8px 8px;
+  background-image: linear-gradient(to right, #93c5fd 1px, transparent 1px), linear-gradient(to bottom, #93c5fd 1px, transparent 1px);
+}
+
+.paper-preview-mini.pattern-dots {
+  background-size: 8px 8px;
+  background-image: radial-gradient(#93c5fd 1.2px, transparent 1.2px);
+}
+
+.paper-preview-mini.pattern-cream {
+  background-color: #faf6ed;
+}
+
+.paper-preview-mini.pattern-kraft {
+  background-color: #d7c4a8;
+}
+
+.paper-preview-mini.pattern-plain {
+  background-color: #ffffff;
+}
+
+/* Ribbon Choices Row */
+.ribbon-choices-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ribbon-choice-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: var(--notes-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--speed-fast) var(--spring-snappy);
+}
+
+.ribbon-choice-btn:hover {
+  background: var(--card-hover);
+  color: var(--text-primary);
+}
+
+.ribbon-choice-btn.active {
+  border-color: var(--accent-gold);
+  background: var(--accent-gold-soft);
+  color: var(--accent-gold);
+}
+
+.ribbon-color-circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+}
+
+.ribbon-color-circle.color-caramel { background: #d97706; }
+.ribbon-color-circle.color-ruby { background: #e11d48; }
+.ribbon-color-circle.color-matcha { background: #16a34a; }
+.ribbon-color-circle.color-berry { background: #ec4899; }
+.ribbon-color-circle.color-none { background: var(--text-tertiary); color: #fff; }
+
+/* ==========================================================================
+   14. DOCKED SIDE DRAWER: KOSTUM BUKU (OPEN TO SIDE, NO BLUR)
+   ========================================================================== */
+.btn-book-costume {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--speed-fast) var(--spring-snappy);
+  white-space: nowrap;
+}
+
+.btn-book-costume:hover {
+  background: var(--card-hover);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.btn-book-costume:active {
+  transform: scale(0.96);
+}
+
+.btn-book-costume.active {
+  background: var(--accent-gold-soft);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  box-shadow: 0 0 0 1px var(--accent-gold-soft);
+}
+
+.book-side-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 380px;
+  max-width: 90vw;
+  background: var(--card-bg);
+  border-left: 1px solid var(--border-strong);
+  box-shadow: -10px 0 35px rgba(0, 0, 0, 0.16);
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(105%);
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms ease;
+  pointer-events: none;
+}
+
+.book-side-drawer.open {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.side-drawer-header {
+  height: 54px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+  background: var(--header-bg);
+}
+
+.side-drawer-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.side-drawer-icon {
+  font-size: 18px;
+}
+
+.side-drawer-header h3 {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+
+.side-drawer-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  background: var(--notes-bg);
+  color: var(--text-secondary);
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--speed-fast) var(--spring-snappy);
+}
+
+.side-drawer-close:hover {
+  background: var(--card-hover);
+  color: var(--text-primary);
+  transform: scale(1.08);
+}
+
+.side-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.side-drawer-hint {
+  background: var(--accent-gold-soft);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 11.5px;
+  color: var(--accent-gold);
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+.book-side-drawer .costume-section {
+  margin-bottom: 0;
+}
+
+.book-side-drawer .costume-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 9px;
+}
+
+.book-side-drawer .ribbon-choices-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.book-side-drawer .ribbon-choice-btn {
+  justify-content: flex-start;
+  padding: 8px 10px;
+}
+
+.side-drawer-footer {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--notes-bg);
+  flex-shrink: 0;
+}
+
+.btn-drawer-done {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--accent-gold);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: all var(--speed-fast) var(--spring-snappy);
+  box-shadow: 0 2px 8px var(--accent-gold-soft);
+}
+
+.btn-drawer-done:hover {
+  background: var(--accent-gold-hover);
+  transform: translateY(-1px);
+}
+
+/* Adjust Editor Content Layout when side drawer is open so the book is never blocked */
+@media (min-width: 1150px) {
+  .split-view.drawer-open .editor-content-wrap {
+    padding-right: 390px;
+    transition: padding 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* Panel Toggle Button in Editor Top Bar */
+.icon-btn-panel-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--speed-fast) var(--spring-snappy);
+}
+
+.icon-btn-panel-toggle:hover {
+  background: var(--card-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.icon-btn-panel-toggle:active {
+  transform: scale(0.95);
+}
+
+.icon-btn-panel-toggle.active {
+  background: var(--accent-gold-soft);
+  color: var(--accent-gold);
+  border-color: var(--accent-gold);
+}
+
+.tool-btn-photo.active,
+.tool-btn-sticker.active {
+  background: var(--accent-gold-soft);
+  color: var(--accent-gold);
+}
+
+/* Side drawer stickers grid */
+.book-side-drawer .stickers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-height: none;
+  overflow-y: visible;
+  padding: 4px 2px;
+}
+
+/* ==========================================================================
+   16. FULL BOOK IMMERSIVE WRITING MODE (KAYA NULIS DI BUKU BENERAN)
+   ========================================================================== */
+.split-view.full-book-mode {
+  grid-template-columns: 0px 0px 1fr !important;
+}
+
+.split-view.full-book-mode .sidebar,
+.split-view.full-book-mode .notes-panel {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  padding: 0 !important;
+  border-right-color: transparent !important;
+}
+
+.split-view.full-book-mode .editor-panel {
+  width: 100vw;
+  background: var(--card-bg);
+}
+
+.split-view.full-book-mode .editor-content-wrap {
+  padding: 0;
+  background: var(--card-bg);
+  overflow: auto;
+}
+
+.split-view.full-book-mode .editor-doc-canvas {
+  width: max(100%, 2200px);
+  min-width: 100%;
+  min-height: max(100%, 1800px);
+  padding: 48px 96px 600px 96px;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.split-view.full-book-mode .editor-doc-canvas.book-spiral {
+  padding-left: 82px;
+}
+
+.split-view.full-book-mode .editor-doc-canvas.book-spiral .book-spiral-spine {
+  left: 20px;
+  width: 28px;
+}
+
+/* Button back to notes list in top-left */
+.btn-book-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-gold);
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all var(--speed-fast) var(--spring-snappy);
+  white-space: nowrap;
+}
+
+.btn-book-back:hover {
+  background: var(--accent-gold-soft);
+  border-color: var(--accent-gold);
+  transform: translateX(-2px);
+}
+
+.btn-book-back:active {
+  transform: scale(0.96);
+}
+
+.btn-book-back.list-open {
+  background: var(--accent-gold);
+  color: #fff;
+  border-color: var(--accent-gold);
 }

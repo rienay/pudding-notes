@@ -197,6 +197,13 @@
                 <span>Catatan</span>
               </button>
 
+              <button class="btn-book-back" id="btnBookBack" title="Buka Daftar Catatan (Lihat Semua Catatan)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <span id="btnBookBackLabel">Semua Catatan</span>
+              </button>
+
               <button class="btn-save-note" id="btnSaveNote" title="Simpan Catatan (Ctrl+S)">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
@@ -219,6 +226,44 @@
               <button class="tool-btn" data-action="heading" title="Judul Besar">H1</button>
               <button class="tool-btn" data-action="subheading" title="Sub Judul">H2</button>
               <span class="tool-divider"></span>
+
+              <!-- STABILO / HIGHLIGHTER TOOL -->
+              <div class="stabilo-tool-wrap" id="stabiloToolWrap">
+                <button class="tool-btn tool-btn-stabilo" id="btnStabiloToggle" title="Hias dengan Stabilo Pastel">
+                  <span class="stabilo-icon-dot" id="activeStabiloDot"></span>
+                  <span>🖍️ Stabilo</span>
+                  <span class="tool-caret">▾</span>
+                </button>
+                <div class="stabilo-palette" id="stabiloPalette">
+                  <div class="stabilo-palette-title">Warna Stabilo:</div>
+                  <div class="stabilo-palette-swatches">
+                    <button class="swatch-btn hl-yellow active" data-color="yellow" title="Stabilo Kuning Cerah"></button>
+                    <button class="swatch-btn hl-green" data-color="green" title="Stabilo Hijau Matcha"></button>
+                    <button class="swatch-btn hl-pink" data-color="pink" title="Stabilo Pink Manis"></button>
+                    <button class="swatch-btn hl-blue" data-color="blue" title="Stabilo Biru Langit"></button>
+                    <button class="swatch-btn hl-orange" data-color="orange" title="Stabilo Oranye Persik"></button>
+                    <button class="swatch-btn hl-purple" data-color="purple" title="Stabilo Ungu Lilac"></button>
+                  </div>
+                  <button class="btn-clear-stabilo" id="btnClearStabilo" title="Hapus highlight pada teks yang dipilih">
+                    <span>🧹 Hapus Stabilo</span>
+                  </button>
+                </div>
+              </div>
+
+              <span class="tool-divider"></span>
+
+              <!-- MENU 1: FOTO & GAMBAR (TERPISAH & BUKA KE SAMPING) -->
+              <button class="tool-btn tool-btn-photo" id="btnOpenPhotoDrawer" title="Tambah Foto atau Gambar (Buka panel ke samping tanpa blur)">
+                <span>📸 Foto</span>
+              </button>
+
+              <!-- MENU 2: STIKER LUCU (TERPISAH & BUKA KE SAMPING) -->
+              <button class="tool-btn tool-btn-sticker" id="btnOpenStickerDrawer" title="Koleksi Stiker Lucu & Deko Jurnal (Buka panel ke samping tanpa blur)">
+                <span>🍮 Stiker</span>
+              </button>
+
+              <span class="tool-divider"></span>
+
               <button class="tool-btn tool-btn-checklist" data-action="add-checklist" title="Tambah Checklist Baru">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -236,9 +281,20 @@
                   <line x1="3" y1="18" x2="3.01" y2="18"></line>
                 </svg>
               </button>
+
+              <span class="tool-divider"></span>
+
+              <button class="tool-btn tool-btn-hand" id="btnToggleHandTool" title="Mode Geser Canvas / Hand Tool (Tahan Spasi atau Klik untuk Geser Kanvas)">
+                <span>🖐️ Geser</span>
+              </button>
             </div>
 
             <div class="editor-actions-right">
+              <!-- KOSTUM BUKU BUTTON -->
+              <button class="btn-book-costume" id="btnOpenBookModal" title="Kostum Buku & Tekstur Kertas (Spiral, Diary, Garis, Grid)">
+                <span>📔 Kostum Buku</span>
+              </button>
+
               <!-- Focus / Zen Mode Button (Ciri Khas!) -->
               <button class="icon-btn" id="btnToggleZen" title="Focus / Zen Mode (Layar Penuh)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -276,8 +332,20 @@
           </div>
 
           <!-- Note Content Body (Centered Document Canvas) -->
-          <div class="editor-content-wrap">
-            <div class="editor-doc-canvas">
+          <div class="editor-content-wrap" id="editorContentWrap">
+            <div class="editor-doc-canvas paper-lined book-spiral" id="editorDocCanvas">
+              <!-- Book Accessories & Bindings -->
+              <div class="book-ribbon ribbon-caramel" id="bookRibbon" title="Pita Pembatas Buku">
+                <div class="ribbon-tail"></div>
+              </div>
+              <div class="book-spiral-spine" id="bookSpiralSpine"></div>
+              <div class="book-clipboard-clip" id="bookClipboardClip">
+                <div class="clipboard-top-bar"></div>
+              </div>
+              
+              <!-- Scrapbook Stage for Draggable & Rotatable Stickers / Polaroids -->
+              <div class="scrapbook-stage" id="scrapbookStage"></div>
+
               <div class="note-meta-header">
                 <div class="folder-capsule-wrap">
                   <select class="folder-picker" id="noteFolderSelect" title="Pindahkan folder">
@@ -291,7 +359,7 @@
               </div>
 
               <!-- Note Title -->
-              <input type="text" class="note-title-input" id="noteTitleInput" placeholder="Judul Catatan..." />
+              <input type="text" class="note-title-input" id="noteTitleInput" placeholder="Judul Catatan..." spellcheck="false" autocomplete="off" autocapitalize="off" />
 
               <!-- Interactive Checklist Section (With Progress Ring & Bar!) -->
               <div class="checklist-container" id="checklistSection">
@@ -323,7 +391,7 @@
               </div>
 
               <!-- Freeform Rich Note Body -->
-              <div class="note-body-editor" id="noteBodyEditor" contenteditable="true" placeholder="Mulai mengetik catatan, ide, atau kutipan di sini..."></div>
+              <div class="note-body-editor" id="noteBodyEditor" contenteditable="true" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Mulai mengetik catatan, ide, atau kutipan di sini..."></div>
             </div>
           </div>
         </main>
@@ -408,6 +476,215 @@
           </div>
         </div>
       </div>
+
+      <!-- DOCKED SIDE DRAWER 1: FOTO & GAMBAR (BUKA KE SAMPING, TANPA BLUR) -->
+      <aside class="book-side-drawer frosted" id="photoDrawer">
+        <div class="side-drawer-header">
+          <div class="side-drawer-title-wrap">
+            <span class="side-drawer-icon">📸</span>
+            <h3>Tambah Foto &amp; Gambar</h3>
+          </div>
+          <button class="side-drawer-close" id="btnPhotoDrawerClose" title="Tutup Panel">&times;</button>
+        </div>
+        <div class="side-drawer-body">
+          <div class="side-drawer-hint">
+            <span>🖼️ Unggah foto dari komputer/HP atau tempel link URL untuk ditempel di buku:</span>
+          </div>
+
+          <div class="image-upload-dropzone" id="imageDropzone">
+            <input type="file" id="imageFileInput" accept="image/*" style="display: none;" />
+            <div class="dropzone-icon">📸</div>
+            <div class="dropzone-text">Pilih foto dari komputer / HP</div>
+            <div class="dropzone-hint">Format JPG, PNG, GIF, WebP</div>
+          </div>
+
+          <div class="form-group" style="margin-top: 12px;">
+            <label for="imageUrlInput">Atau tempel Link / URL Gambar</label>
+            <div class="input-with-button-row">
+              <input type="url" class="apple-text-input" id="imageUrlInput" placeholder="https://images.unsplash.com/..." />
+              <button type="button" class="btn-apple-secondary" id="btnLoadImageUrl">Muat</button>
+            </div>
+          </div>
+
+          <!-- Live Preview Upload -->
+          <div class="upload-preview-area" id="uploadPreviewArea" style="display: none;">
+            <div class="preview-badge">Preview Foto:</div>
+            <div class="preview-polaroid-frame" id="previewPolaroidFrame">
+              <img id="uploadPreviewImg" src="" alt="Preview" />
+              <div class="polaroid-caption" id="previewCaptionText">Catatan Kenangan ✨</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="imageCaptionInput">Keterangan Foto (Opsional)</label>
+            <input type="text" class="apple-text-input" id="imageCaptionInput" placeholder="Contoh: Liburan seru, Mood hari ini..." maxlength="30" />
+          </div>
+
+          <div class="form-group">
+            <label>Gaya Tampilan Foto</label>
+            <div class="style-selector-row" id="photoStyleSelector">
+              <button type="button" class="style-choice-btn active" data-style="polaroid">
+                <span class="choice-icon">🖼️</span>
+                <span>Polaroid</span>
+              </button>
+              <button type="button" class="style-choice-btn" data-style="cutout">
+                <span class="choice-icon">✂️</span>
+                <span>Cutout</span>
+              </button>
+              <button type="button" class="style-choice-btn" data-style="pin">
+                <span class="choice-icon">📌</span>
+                <span>Pin Kertas</span>
+              </button>
+              <button type="button" class="style-choice-btn" data-style="clean">
+                <span class="choice-icon">✨</span>
+                <span>Foto Polos</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-drawer-footer">
+          <button class="btn-apple-primary btn-drawer-done" id="btnConfirmAddImage" disabled>Tempel ke Buku 📌</button>
+        </div>
+      </aside>
+
+      <!-- DOCKED SIDE DRAWER 2: KOLEKSI STIKER LUCU (BUKA KE SAMPING, TANPA BLUR) -->
+      <aside class="book-side-drawer frosted" id="stickerDrawer">
+        <div class="side-drawer-header">
+          <div class="side-drawer-title-wrap">
+            <span class="side-drawer-icon">🍮</span>
+            <h3>Koleksi Stiker Lucu</h3>
+          </div>
+          <button class="side-drawer-close" id="btnStickerDrawerClose" title="Tutup Panel">&times;</button>
+        </div>
+        <div class="side-drawer-body">
+          <div class="side-drawer-hint">
+            <span>✨ Klik stiker favorit di bawah untuk langsung menempelkannya ke buku catatanmu:</span>
+          </div>
+          <div class="stickers-grid" id="stickersGrid">
+            <!-- Injected via JavaScript with SVG & cute icons -->
+          </div>
+        </div>
+        <div class="side-drawer-footer">
+          <button class="btn-apple-primary btn-drawer-done" id="btnStickerDrawerDone">Selesai ✨</button>
+        </div>
+      </aside>
+
+      <!-- DOCKED SIDE DRAWER: KOSTUM BUKU & KERTAS (BUKA KE SAMPING, TANPA BLUR) -->
+      <aside class="book-side-drawer frosted" id="bookModal">
+        <div class="side-drawer-header">
+          <div class="side-drawer-title-wrap">
+            <span class="side-drawer-icon">📔</span>
+            <h3>Kostum Buku Catatan</h3>
+          </div>
+          <button class="side-drawer-close" id="btnBookModalClose" title="Tutup Panel">&times;</button>
+        </div>
+        <div class="side-drawer-body">
+          <div class="side-drawer-hint">
+            <span>✨ Klik pilihan di bawah untuk melihat perubahan langsung pada buku:</span>
+          </div>
+
+          <!-- Pilihan 1: Sampul & Jilid Buku -->
+          <div class="costume-section">
+            <div class="costume-section-title">1. Gaya Jilid &amp; Sampul Buku</div>
+            <div class="costume-cards-grid" id="bookCoverGrid">
+              <button type="button" class="costume-card active" data-cover="spiral">
+                <div class="costume-preview-icon">📓</div>
+                <div class="costume-card-name">Spiral Binder</div>
+                <div class="costume-card-sub">Ring kawat spiral estetik</div>
+              </button>
+              <button type="button" class="costume-card" data-cover="diary">
+                <div class="costume-preview-icon">📔</div>
+                <div class="costume-card-name">Diary Kulit</div>
+                <div class="costume-card-sub">Jahitan tepi mewah & rapi</div>
+              </button>
+              <button type="button" class="costume-card" data-cover="scrapbook">
+                <div class="costume-preview-icon">🧸</div>
+                <div class="costume-card-name">Scrapbook Kraft</div>
+                <div class="costume-card-sub">Aesthetic tape & vintage</div>
+              </button>
+              <button type="button" class="costume-card" data-cover="clipboard">
+                <div class="costume-preview-icon">📋</div>
+                <div class="costume-card-name">Papan Klip</div>
+                <div class="costume-card-sub">Klip metalik di bagian atas</div>
+              </button>
+              <button type="button" class="costume-card" data-cover="clean">
+                <div class="costume-preview-icon">📄</div>
+                <div class="costume-card-name">Minimalis Modern</div>
+                <div class="costume-card-sub">Tampilan bersih Apple Notes</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pilihan 2: Pola Tekstur Kertas -->
+          <div class="costume-section">
+            <div class="costume-section-title">2. Pola &amp; Tekstur Lembaran Kertas</div>
+            <div class="costume-cards-grid" id="paperPatternGrid">
+              <button type="button" class="costume-card active" data-paper="lined">
+                <div class="paper-preview-mini pattern-lined"></div>
+                <div class="costume-card-name">Kertas Bergaris</div>
+                <div class="costume-card-sub">Garis buku catatan klasik</div>
+              </button>
+              <button type="button" class="costume-card" data-paper="grid">
+                <div class="paper-preview-mini pattern-grid"></div>
+                <div class="costume-card-name">Kotak-kotak (Grid)</div>
+                <div class="costume-card-sub">Grid matematika & teknis</div>
+              </button>
+              <button type="button" class="costume-card" data-paper="dots">
+                <div class="paper-preview-mini pattern-dots"></div>
+                <div class="costume-card-name">Titik-titik (BuJo)</div>
+                <div class="costume-card-sub">Dot grid bullet journal</div>
+              </button>
+              <button type="button" class="costume-card" data-paper="cream">
+                <div class="paper-preview-mini pattern-cream"></div>
+                <div class="costume-card-name">Polos Krem Lembut</div>
+                <div class="costume-card-sub">Kertas warm ivory nyaman</div>
+              </button>
+              <button type="button" class="costume-card" data-paper="kraft">
+                <div class="paper-preview-mini pattern-kraft"></div>
+                <div class="costume-card-name">Vintage Kraft</div>
+                <div class="costume-card-sub">Tekstur serat cokelat alami</div>
+              </button>
+              <button type="button" class="costume-card" data-paper="plain">
+                <div class="paper-preview-mini pattern-plain"></div>
+                <div class="costume-card-name">Putih Bersih</div>
+                <div class="costume-card-sub">Tanpa corak garis</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pilihan 3: Pita Pembatas Buku -->
+          <div class="costume-section">
+            <div class="costume-section-title">3. Pita Pembatas Buku (Bookmark Ribbon)</div>
+            <div class="ribbon-choices-row" id="bookRibbonChoices">
+              <button type="button" class="ribbon-choice-btn active" data-ribbon="caramel">
+                <span class="ribbon-color-circle color-caramel"></span>
+                <span>Emas Karamel</span>
+              </button>
+              <button type="button" class="ribbon-choice-btn" data-ribbon="ruby">
+                <span class="ribbon-color-circle color-ruby"></span>
+                <span>Merah Delima</span>
+              </button>
+              <button type="button" class="ribbon-choice-btn" data-ribbon="matcha">
+                <span class="ribbon-color-circle color-matcha"></span>
+                <span>Hijau Matcha</span>
+              </button>
+              <button type="button" class="ribbon-choice-btn" data-ribbon="berry">
+                <span class="ribbon-color-circle color-berry"></span>
+                <span>Pink Sakura</span>
+              </button>
+              <button type="button" class="ribbon-choice-btn" data-ribbon="none">
+                <span class="ribbon-color-circle color-none">✕</span>
+                <span>Tanpa Pita</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-drawer-footer">
+          <button class="btn-apple-primary btn-drawer-done" id="btnSaveBookCostume">Selesai ✨</button>
+        </div>
+      </aside>
 
       <!-- Notification Toast with UNDO Button -->
       <div class="apple-toast" id="appleToast">

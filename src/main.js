@@ -111,14 +111,34 @@ const INITIAL_NOTES = [
   {
     id: 'note-1',
     title: 'Selamat Datang di Pudding Notes 🍮✨',
-    body: '<div><b>Pudding Notes</b> kini dilengkapi 4 ciri khas unik yang membedakannya dari aplikasi lain:</div><br><div>1. <b>Varian Rasa Pudding</b> di sidebar: Caramel 🍮, Matcha 🍵, Berry 🍓, dan Dark Choco 🍫.</div><div>2. <b>Fisika Pudding Bounce</b>: Coba centang tugas di bawah ini untuk melihat efek pantulan jeli yang memuaskan!</div><div>3. <b>Circular Progress Ring</b>: Lingkaran progress & bar yang terisi mulus secara visual.</div><div>4. <b>Focus / Zen Mode</b>: Tekan ikon expand di pojok kanan atas untuk menulis tanpa distraksi!</div>',
+    body: '<div><mark class="pudding-stabilo hl-yellow">Pudding Notes</mark> kini dilengkapi fitur jurnal buku &amp; scrapbook estetik:</div><br><div>1. <b>Hias dengan Stabilo</b>: Sorot kalimat apa saja lalu tekan tombol <mark class="pudding-stabilo hl-green">🖍️ Stabilo</mark> untuk memberi warna pastel lembut!</div><div>2. <b>Bisa Nambah Foto &amp; Stiker</b>: Tekan <mark class="pudding-stabilo hl-pink">📸 Foto</mark> atau <mark class="pudding-stabilo hl-pink">🍮 Stiker</mark> untuk tempel dekorasi estetik!</div><div>3. <b>Bisa Diputer-puter Bebas</b>: Geser knob putar <mark class="pudding-stabilo hl-orange">🔄 360 derajat</mark> di atas stiker untuk memiringkan arahnya!</div><div>4. <b>Kostum Buku &amp; Tekstur Kertas</b>: Klik tombol <mark class="pudding-stabilo hl-blue">📔 Kostum Buku</mark> untuk ganti sampul Spiral Ring, Diary Kulit, atau Scrapbook!</div>',
     folder: 'notes',
     pinned: true,
+    bookStyle: {
+      cover: 'spiral',
+      paper: 'lined',
+      ribbon: 'caramel'
+    },
+    stickers: [
+      {
+        id: 'stk_demo_1',
+        title: 'Pudding Custard',
+        caption: 'Pudding Time 🍮',
+        src: 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><path d="M22 68 Q18 42 30 32 Q50 24 70 32 Q82 42 78 68 Q80 78 50 82 Q20 78 22 68 Z" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/><path d="M30 32 Q50 24 70 32 Q66 45 60 46 Q54 38 46 48 Q38 44 30 32 Z" fill="#b45309"/><ellipse cx="50" cy="27" rx="6" ry="6" fill="#ef4444"/><circle cx="43" cy="54" r="2.5" fill="#1e293b"/><circle cx="57" cy="54" r="2.5" fill="#1e293b"/><ellipse cx="38" cy="60" rx="3" ry="1.5" fill="#f472b6"/><ellipse cx="62" cy="60" rx="3" ry="1.5" fill="#f472b6"/><path d="M47 62 Q50 65 53 62" stroke="#1e293b" stroke-width="2" fill="none" stroke-linecap="round"/></svg>'),
+        style: 'polaroid',
+        x: 630,
+        y: 320,
+        width: 125,
+        height: 145,
+        rotation: 4,
+        zIndex: 10
+      }
+    ],
     checklist: [
-      { id: 'c1', text: 'Coba ganti rasa pudding di menu sidebar (Caramel, Matcha, Berry, Choco)', done: true },
-      { id: 'c2', text: 'Klik checklist ini untuk melihat animasi Pudding Bounce', done: false },
-      { id: 'c3', text: 'Selesaikan semua tugas untuk melihat kejutan selebrasi 🎉', done: false },
-      { id: 'c4', text: 'Coba tombol Focus / Zen Mode untuk menulis layar penuh', done: false }
+      { id: 'c1', text: 'Coba putar stiker polaroid di pojok kanan dengan handle putar 🔄', done: true },
+      { id: 'c2', text: 'Sorot teks lalu beri warna dengan tombol 🖍️ Stabilo', done: false },
+      { id: 'c3', text: 'Klik tombol 📔 Kostum Buku untuk ganti cover & garis kertas', done: false },
+      { id: 'c4', text: 'Klik 📸 Foto atau 🍮 Stiker untuk dekorasi catatanmu', done: false }
     ],
     createdAt: Date.now() - 1000 * 60 * 60 * 5,
     updatedAt: Date.now() - 1000 * 60 * 10
@@ -129,6 +149,12 @@ const INITIAL_NOTES = [
     body: '<div>Checklist kesiapan deployment ke Vercel untuk aplikasi modern:</div><br><div>1. Pastikan build artifact berjalan tanpa warning.</div><div>2. Uji responsivitas di layar iPhone &amp; tablet.</div><div>3. Cek kembali kontras warna dan tipografi.</div>',
     folder: 'notes',
     pinned: true,
+    bookStyle: {
+      cover: 'diary',
+      paper: 'grid',
+      ribbon: 'ruby'
+    },
+    stickers: [],
     checklist: [
       { id: 'c5', text: 'Setup file vercel.json untuk routing statis Vite', done: true },
       { id: 'c6', text: 'Testing performa & SEO', done: true },
@@ -143,6 +169,12 @@ const INITIAL_NOTES = [
     body: '<div>Bahan-bahan kopi dan camilan untuk workspace meja kerja:</div>',
     folder: 'notes',
     pinned: false,
+    bookStyle: {
+      cover: 'scrapbook',
+      paper: 'kraft',
+      ribbon: 'none'
+    },
+    stickers: [],
     checklist: [
       { id: 'c8', text: 'Biji Kopi Arabika Specialty 250g', done: false },
       { id: 'c9', text: 'Oat Milk Barista Edition', done: true },
@@ -180,7 +212,6 @@ class AppState {
     if (raw) {
       try {
         let list = JSON.parse(raw);
-        // Remove legacy 'all' or obsolete dummy placeholders (work, personal, ideas)
         list = list.filter(f => f.id !== 'all' && f.id !== 'work' && f.id !== 'personal' && f.id !== 'ideas');
         const hasNotes = list.some(f => f.id === 'notes');
         if (!hasNotes) {
@@ -203,10 +234,25 @@ class AppState {
     if (raw) {
       try {
         const notes = JSON.parse(raw);
-        // Migrate legacy folder assignments to 'notes'
         notes.forEach(n => {
           if (!n.folder || n.folder === 'all' || n.folder === 'work' || n.folder === 'personal' || n.folder === 'ideas') {
             n.folder = 'notes';
+          }
+          if (!n.bookStyle) {
+            n.bookStyle = { cover: 'spiral', paper: 'lined', ribbon: 'caramel' };
+          }
+          if (!n.stickers) {
+            n.stickers = [];
+          }
+          // Ensure first note has neat, pristine demo stickers and text
+          if (n.id === 'note-1') {
+            if (!n.stickers || n.stickers.length === 0 || n.stickers.length > 1 || n.stickers[0].y < 200) {
+              n.stickers = JSON.parse(JSON.stringify(INITIAL_NOTES[0].stickers));
+            }
+            // Clean up any fragmented test text from automated tests
+            if (n.body && (n.body.includes('>Pu</') || n.body.includes('Pu <') || n.body.includes('Pu dding') || n.body.includes('kini di<'))) {
+              n.body = INITIAL_NOTES[0].body;
+            }
           }
         });
         return notes;
@@ -293,6 +339,8 @@ const notesListContainer = document.getElementById('notesListContainer');
 
 // Editor Elements
 const btnMobileBack = document.getElementById('btnMobileBack');
+const btnBookBack = document.getElementById('btnBookBack');
+const btnTogglePanels = document.getElementById('btnTogglePanels');
 const btnSaveNote = document.getElementById('btnSaveNote');
 const saveBtnText = document.getElementById('saveBtnText');
 const saveStatus = document.getElementById('saveStatus');
@@ -306,6 +354,50 @@ const noteDateMeta = document.getElementById('noteDateMeta');
 const noteWordsMeta = document.getElementById('noteWordsMeta');
 const noteFolderSelect = document.getElementById('noteFolderSelect');
 const noteTitleInput = document.getElementById('noteTitleInput');
+
+// Canvas & Book Costume Elements
+const editorContentWrap = document.getElementById('editorContentWrap');
+const editorDocCanvas = document.getElementById('editorDocCanvas');
+const bookRibbon = document.getElementById('bookRibbon');
+const scrapbookStage = document.getElementById('scrapbookStage');
+
+// Stabilo Highlighter Elements
+const stabiloToolWrap = document.getElementById('stabiloToolWrap');
+const btnStabiloToggle = document.getElementById('btnStabiloToggle');
+const activeStabiloDot = document.getElementById('activeStabiloDot');
+const stabiloPalette = document.getElementById('stabiloPalette');
+const btnClearStabilo = document.getElementById('btnClearStabilo');
+
+// Book Costume Side Drawer Elements
+const btnOpenBookModal = document.getElementById('btnOpenBookModal');
+const bookModal = document.getElementById('bookModal');
+const btnBookModalClose = document.getElementById('btnBookModalClose');
+const bookCoverGrid = document.getElementById('bookCoverGrid');
+const paperPatternGrid = document.getElementById('paperPatternGrid');
+const bookRibbonChoices = document.getElementById('bookRibbonChoices');
+const btnSaveBookCostume = document.getElementById('btnSaveBookCostume');
+
+// Photo Side Drawer Elements (Terpisah & Buka ke Samping Tanpa Blur)
+const btnOpenPhotoDrawer = document.getElementById('btnOpenPhotoDrawer');
+const photoDrawer = document.getElementById('photoDrawer');
+const btnPhotoDrawerClose = document.getElementById('btnPhotoDrawerClose');
+const imageDropzone = document.getElementById('imageDropzone');
+const imageFileInput = document.getElementById('imageFileInput');
+const imageUrlInput = document.getElementById('imageUrlInput');
+const btnLoadImageUrl = document.getElementById('btnLoadImageUrl');
+const uploadPreviewArea = document.getElementById('uploadPreviewArea');
+const uploadPreviewImg = document.getElementById('uploadPreviewImg');
+const previewCaptionText = document.getElementById('previewCaptionText');
+const imageCaptionInput = document.getElementById('imageCaptionInput');
+const photoStyleSelector = document.getElementById('photoStyleSelector');
+const btnConfirmAddImage = document.getElementById('btnConfirmAddImage');
+
+// Sticker Side Drawer Elements (Terpisah & Buka ke Samping Tanpa Blur)
+const btnOpenStickerDrawer = document.getElementById('btnOpenStickerDrawer');
+const stickerDrawer = document.getElementById('stickerDrawer');
+const btnStickerDrawerClose = document.getElementById('btnStickerDrawerClose');
+const btnStickerDrawerDone = document.getElementById('btnStickerDrawerDone');
+const stickersGrid = document.getElementById('stickersGrid');
 
 // Checklist Elements
 const checklistSection = document.getElementById('checklistSection');
@@ -688,6 +780,9 @@ function renderNotesList() {
       renderNotesList();
       renderEditor();
 
+      // Buka catatan secara penuh (Full Book Mode) layaknya buku asli!
+      enterFullBookMode();
+
       if (window.innerWidth <= 680) {
         splitView.classList.add('view-editor');
       }
@@ -771,6 +866,457 @@ function setupSwipeGesture(card, wrapper, onDelete) {
 }
 
 // =============================================================================
+// 7B. CUTE STICKERS DATASET & SCRAPBOOK ENGINE
+// =============================================================================
+
+const CUTE_STICKERS = [
+  {
+    id: 'stk_pudding',
+    name: 'Pudding Custard',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80"><path d="M22 68 Q18 42 30 32 Q50 24 70 32 Q82 42 78 68 Q80 78 50 82 Q20 78 22 68 Z" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/><path d="M30 32 Q50 24 70 32 Q66 45 60 46 Q54 38 46 48 Q38 44 30 32 Z" fill="#b45309"/><ellipse cx="50" cy="27" rx="6" ry="6" fill="#ef4444"/><circle cx="43" cy="54" r="2.5" fill="#1e293b"/><circle cx="57" cy="54" r="2.5" fill="#1e293b"/><ellipse cx="38" cy="60" rx="3" ry="1.5" fill="#f472b6"/><ellipse cx="62" cy="60" rx="3" ry="1.5" fill="#f472b6"/><path d="M47 62 Q50 65 53 62" stroke="#1e293b" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`
+  },
+  {
+    id: 'stk_strawberry',
+    name: 'Strawberry',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80"><path d="M50 28 Q75 32 72 65 Q68 85 50 92 Q32 85 28 65 Q25 32 50 28 Z" fill="#f43f5e" stroke="#be123c" stroke-width="2.5"/><path d="M50 28 Q42 16 34 22 Q44 26 50 28 Q56 26 66 22 Q58 16 50 28 Z" fill="#22c55e"/><circle cx="40" cy="46" r="1.5" fill="#fef08a"/><circle cx="60" cy="46" r="1.5" fill="#fef08a"/><circle cx="48" cy="58" r="1.5" fill="#fef08a"/><circle cx="36" cy="68" r="1.5" fill="#fef08a"/><circle cx="62" cy="68" r="1.5" fill="#fef08a"/></svg>`
+  },
+  {
+    id: 'stk_cat',
+    name: 'Kucing Lucu',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80"><circle cx="50" cy="52" r="32" fill="#fed7aa" stroke="#ea580c" stroke-width="2.5"/><polygon points="26,32 18,12 38,22" fill="#fed7aa" stroke="#ea580c" stroke-width="2.5"/><polygon points="74,32 82,12 62,22" fill="#fed7aa" stroke="#ea580c" stroke-width="2.5"/><polygon points="27,29 22,17 35,23" fill="#f472b6"/><polygon points="73,29 78,17 65,23" fill="#f472b6"/><ellipse cx="40" cy="48" rx="3.5" ry="4.5" fill="#1e293b"/><ellipse cx="60" cy="48" rx="3.5" ry="4.5" fill="#1e293b"/><polygon points="50,56 46,53 54,53" fill="#f43f5e"/><path d="M46 58 Q42 62 46 64 M54 58 Q58 62 54 64" stroke="#1e293b" stroke-width="2" fill="none"/><line x1="24" y1="52" x2="10" y2="50" stroke="#ea580c" stroke-width="2"/><line x1="24" y1="56" x2="10" y2="58" stroke="#ea580c" stroke-width="2"/><line x1="76" y1="52" x2="90" y2="50" stroke="#ea580c" stroke-width="2"/><line x1="76" y1="56" x2="90" y2="58" stroke="#ea580c" stroke-width="2"/></svg>`
+  },
+  {
+    id: 'stk_heart',
+    name: 'Hati Berkilau',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80"><path d="M50 82 C20 62 10 40 22 24 C34 8 46 20 50 28 C54 20 66 8 78 24 C90 40 80 62 50 82 Z" fill="#ec4899" stroke="#be185d" stroke-width="2.5"/><circle cx="34" cy="30" r="3" fill="#fff" opacity="0.7"/><polygon points="78,16 80,20 84,22 80,24 78,28 76,24 72,22 76,20" fill="#fef08a"/></svg>`
+  },
+  {
+    id: 'stk_star',
+    name: 'Bintang Emas',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80"><polygon points="50,12 61,36 88,38 67,56 73,82 50,68 27,82 33,56 12,38 39,36" fill="#facc15" stroke="#ca8a04" stroke-width="2.5"/><circle cx="43" cy="46" r="2.5" fill="#1e293b"/><circle cx="57" cy="46" r="2.5" fill="#1e293b"/><path d="M47 54 Q50 58 53 54" stroke="#1e293b" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="37" cy="52" rx="2.5" ry="1.5" fill="#fb923c"/><ellipse cx="63" cy="52" rx="2.5" ry="1.5" fill="#fb923c"/></svg>`
+  },
+  {
+    id: 'stk_coffee',
+    name: 'Kopi Hangat',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80"><path d="M25 40 L30 78 Q32 86 50 86 Q68 86 70 78 L75 40 Z" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5"/><path d="M72 46 Q88 46 86 64 Q84 74 70 72" stroke="#94a3b8" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="50" cy="40" rx="25" ry="6" fill="#78350f"/><path d="M48 38 Q50 36 52 38 Q50 42 48 38 Z" fill="#fed7aa"/><path d="M42 26 Q45 20 42 14 M50 28 Q53 22 50 16 M58 26 Q61 20 58 14" stroke="#d97706" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/></svg>`
+  },
+  {
+    id: 'stk_ribbon',
+    name: 'Pita Pastel',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80"><ellipse cx="50" cy="48" rx="8" ry="7" fill="#f43f5e" stroke="#be123c" stroke-width="2"/><path d="M42 48 Q15 28 20 56 Q30 62 44 52 Z" fill="#fb7185" stroke="#be123c" stroke-width="2"/><path d="M58 48 Q85 28 80 56 Q70 62 56 52 Z" fill="#fb7185" stroke="#be123c" stroke-width="2"/><path d="M44 54 Q36 82 28 84 Q38 72 46 56 Z" fill="#fb7185" stroke="#be123c" stroke-width="2"/><path d="M56 54 Q64 82 72 84 Q62 72 54 56 Z" fill="#fb7185" stroke="#be123c" stroke-width="2"/></svg>`
+  },
+  {
+    id: 'stk_tape',
+    name: 'Washi Tape',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80"><rect x="10" y="36" width="80" height="28" rx="3" fill="#a7f3d0" stroke="#059669" stroke-width="2"/><path d="M10 36 L15 50 L10 64 M90 36 L85 50 L90 64" fill="#a7f3d0" stroke="#059669" stroke-width="2"/><line x1="24" y1="42" x2="32" y2="58" stroke="#059669" stroke-width="2" opacity="0.5"/><line x1="44" y1="42" x2="52" y2="58" stroke="#059669" stroke-width="2" opacity="0.5"/><line x1="64" y1="42" x2="72" y2="58" stroke="#059669" stroke-width="2" opacity="0.5"/></svg>`
+  },
+  {
+    id: 'stk_flower',
+    name: 'Bunga Daisy',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80"><circle cx="50" cy="50" r="14" fill="#facc15" stroke="#ca8a04" stroke-width="2"/><ellipse cx="50" cy="22" rx="9" ry="15" fill="#fff" stroke="#e2e8f0" stroke-width="2"/><ellipse cx="50" cy="78" rx="9" ry="15" fill="#fff" stroke="#e2e8f0" stroke-width="2"/><ellipse cx="22" cy="50" rx="15" ry="9" fill="#fff" stroke="#e2e8f0" stroke-width="2"/><ellipse cx="78" cy="50" rx="15" ry="9" fill="#fff" stroke="#e2e8f0" stroke-width="2"/><circle cx="50" cy="50" r="12" fill="#f59e0b"/></svg>`
+  },
+  {
+    id: 'stk_pin',
+    name: 'Pin Emas',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80"><circle cx="50" cy="34" r="18" fill="#fbbf24" stroke="#d97706" stroke-width="2.5"/><circle cx="44" cy="28" r="4" fill="#fef08a"/><path d="M50 48 L50 82" stroke="#64748b" stroke-width="4" stroke-linecap="round"/><ellipse cx="50" cy="85" rx="8" ry="4" fill="#000" opacity="0.25"/></svg>`
+  }
+];
+
+function svgToDataUrl(svgStr) {
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
+}
+
+// -----------------------------------------------------------------------------
+// STABILO HIGHLIGHTER LOGIC
+// -----------------------------------------------------------------------------
+let activeStabiloColor = 'yellow';
+
+const STABILO_COLORS = {
+  yellow: '#fef08a',
+  green: '#bbf7d0',
+  pink: '#fbcfe8',
+  blue: '#bae6fd',
+  orange: '#fed7aa',
+  purple: '#e9d5ff'
+};
+
+function getStabiloColorHex(color) {
+  return STABILO_COLORS[color] || '#fef08a';
+}
+
+function applyStabiloHighlight(color) {
+  activeStabiloColor = color;
+  if (activeStabiloDot) {
+    activeStabiloDot.style.background = getStabiloColorHex(color);
+  }
+
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) {
+    showToast(`Stabilo ${color} aktif! Sorot teks di catatan untuk mewarnai 🖍️`);
+    return;
+  }
+
+  const range = sel.getRangeAt(0);
+  if (!noteBodyEditor.contains(range.commonAncestorContainer)) {
+    showToast('Sorot teks di dalam catatan untuk memakai stabilo! 🖍️');
+    return;
+  }
+
+  // Check if selection is already inside a stabilo mark
+  let parentMark = range.commonAncestorContainer.nodeType === 1
+    ? range.commonAncestorContainer.closest('.pudding-stabilo')
+    : range.commonAncestorContainer.parentElement.closest('.pudding-stabilo');
+
+  if (parentMark) {
+    parentMark.className = `pudding-stabilo hl-${color}`;
+    triggerAutoSave();
+    sfx.playCheck();
+    showToast(`Warna stabilo diubah ke ${color}! ✨`);
+    return;
+  }
+
+  try {
+    const mark = document.createElement('mark');
+    mark.className = `pudding-stabilo hl-${color}`;
+    mark.appendChild(range.extractContents());
+    range.insertNode(mark);
+    sel.removeAllRanges();
+    triggerAutoSave();
+    sfx.playCheck();
+    showToast(`Stabilo diterapkan! ✨`);
+  } catch (err) {
+    document.execCommand('backColor', false, getStabiloColorHex(color));
+    triggerAutoSave();
+  }
+}
+
+function clearStabiloHighlight() {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) {
+    showToast('Pilih teks berstabilo untuk dihapus.');
+    return;
+  }
+
+  const range = sel.getRangeAt(0);
+  let parentMark = range.commonAncestorContainer.nodeType === 1
+    ? range.commonAncestorContainer.closest('.pudding-stabilo')
+    : range.commonAncestorContainer.parentElement?.closest('.pudding-stabilo');
+
+  if (parentMark) {
+    const parent = parentMark.parentNode;
+    while (parentMark.firstChild) {
+      parent.insertBefore(parentMark.firstChild, parentMark);
+    }
+    parent.removeChild(parentMark);
+    triggerAutoSave();
+    sfx.playPop(550, 0.04);
+    showToast('Stabilo dihapus 🧹');
+  } else {
+    const marks = noteBodyEditor.querySelectorAll('.pudding-stabilo');
+    let removed = false;
+    marks.forEach(m => {
+      if (sel.containsNode(m, true)) {
+        const parent = m.parentNode;
+        while (m.firstChild) parent.insertBefore(m.firstChild, m);
+        parent.removeChild(m);
+        removed = true;
+      }
+    });
+    if (removed) {
+      triggerAutoSave();
+      sfx.playPop(550, 0.04);
+      showToast('Stabilo dihapus 🧹');
+    } else {
+      showToast('Pilih teks berstabilo untuk dihapus.');
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// KOSTUM BUKU & KERTAS LOGIC
+// -----------------------------------------------------------------------------
+function applyBookCostume(bookStyle) {
+  if (!editorDocCanvas) return;
+  const cover = bookStyle?.cover || 'spiral';
+  const paper = bookStyle?.paper || 'lined';
+  const ribbon = bookStyle?.ribbon || 'caramel';
+
+  // Covers
+  ['book-spiral', 'book-diary', 'book-scrapbook', 'book-clipboard', 'book-clean'].forEach(c => {
+    editorDocCanvas.classList.remove(c);
+  });
+  editorDocCanvas.classList.add(`book-${cover}`);
+
+  // Papers
+  ['paper-lined', 'paper-grid', 'paper-dots', 'paper-cream', 'paper-kraft', 'paper-plain'].forEach(p => {
+    editorDocCanvas.classList.remove(p);
+  });
+  editorDocCanvas.classList.add(`paper-${paper}`);
+
+  // Ribbon
+  if (bookRibbon) {
+    ['ribbon-caramel', 'ribbon-ruby', 'ribbon-matcha', 'ribbon-berry', 'ribbon-none'].forEach(r => {
+      bookRibbon.classList.remove(r);
+    });
+    bookRibbon.classList.add(`ribbon-${ribbon}`);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// SCRAPBOOK ROTATABLE & DRAGGABLE STICKER ENGINE
+// -----------------------------------------------------------------------------
+let selectedStickerElement = null;
+
+function deselectAllStickers() {
+  if (selectedStickerElement) {
+    selectedStickerElement.classList.remove('is-selected');
+    selectedStickerElement = null;
+  }
+}
+
+function selectSticker(elem) {
+  deselectAllStickers();
+  elem.classList.add('is-selected');
+  selectedStickerElement = elem;
+}
+
+function renderScrapbookStage(note) {
+  if (!scrapbookStage) return;
+  scrapbookStage.innerHTML = '';
+  selectedStickerElement = null;
+
+  if (!note.stickers || note.stickers.length === 0) return;
+
+  note.stickers.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'scrapbook-item';
+    el.dataset.id = item.id;
+    el.style.left = `${item.x || 40}px`;
+    el.style.top = `${item.y || 40}px`;
+    el.style.transform = `rotate(${item.rotation || 0}deg)`;
+    el.style.zIndex = item.zIndex || 10;
+
+    const styleName = item.style || 'polaroid';
+    const washiHtml = styleName === 'polaroid' ? '<div class="washi-tape-strip"></div>' : '';
+    const pinHtml = styleName === 'pin' ? '<div class="pushpin-icon">📌</div>' : '';
+    const captionHtml = (styleName === 'polaroid' && item.caption) 
+      ? `<div class="polaroid-caption">${escapeHtml(item.caption)}</div>` 
+      : '';
+
+    el.innerHTML = `
+      <div class="sticker-controls">
+        <button class="sticker-rotate-knob" title="Tarik untuk memutar (360°)">🔄</button>
+        <div class="sticker-action-bar">
+          <button class="sticker-act-btn btn-rot-left" title="Putar -15°">⟲ -15°</button>
+          <button class="sticker-act-btn btn-rot-reset" title="Luruskan (0°)">0°</button>
+          <button class="sticker-act-btn btn-rot-right" title="Putar +15°">⟳ +15°</button>
+          <button class="sticker-act-btn btn-toggle-style" title="Ganti Gaya Frame">🎨 Gaya</button>
+          <button class="sticker-act-btn btn-del-sticker" title="Hapus Stiker">🗑️</button>
+        </div>
+        <div class="sticker-resize-knob" title="Tarik untuk ubah ukuran"></div>
+      </div>
+      <div class="sticker-visual-wrap style-${styleName}">
+        ${washiHtml}
+        ${pinHtml}
+        <img src="${item.src}" alt="${escapeHtml(item.title || 'Stiker')}" draggable="false" style="width: ${item.width || 120}px; height: auto;" />
+        ${captionHtml}
+      </div>
+    `;
+
+    setupStickerInteraction(el, item, note);
+    scrapbookStage.appendChild(el);
+  });
+}
+
+function setupStickerInteraction(el, item, note) {
+  // 1. ROTATE KNOB HANDLER (Drag to freely rotate 360 degrees)
+  const rotateKnob = el.querySelector('.sticker-rotate-knob');
+  if (rotateKnob) {
+    rotateKnob.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      selectSticker(el);
+      rotateKnob.setPointerCapture(e.pointerId);
+
+      const rect = el.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      const startRad = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+      const startDeg = startRad * (180 / Math.PI);
+      const initialRot = item.rotation || 0;
+
+      const onMove = (moveEvt) => {
+        const curRad = Math.atan2(moveEvt.clientY - centerY, moveEvt.clientX - centerX);
+        const curDeg = curRad * (180 / Math.PI);
+        const deltaDeg = curDeg - startDeg;
+        let newRot = Math.round(initialRot + deltaDeg);
+        item.rotation = newRot;
+        el.style.transform = `rotate(${newRot}deg)`;
+      };
+
+      const onUp = () => {
+        rotateKnob.releasePointerCapture(e.pointerId);
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+        triggerAutoSave();
+        sfx.playPop(1000, 0.03);
+      };
+
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    });
+  }
+
+  // 2. QUICK ROTATE & ACTION BUTTONS
+  const btnRotLeft = el.querySelector('.btn-rot-left');
+  if (btnRotLeft) {
+    btnRotLeft.addEventListener('click', (e) => {
+      e.stopPropagation();
+      item.rotation = (item.rotation || 0) - 15;
+      el.style.transform = `rotate(${item.rotation}deg)`;
+      sfx.playPop(850, 0.03);
+      triggerAutoSave();
+    });
+  }
+
+  const btnRotRight = el.querySelector('.btn-rot-right');
+  if (btnRotRight) {
+    btnRotRight.addEventListener('click', (e) => {
+      e.stopPropagation();
+      item.rotation = (item.rotation || 0) + 15;
+      el.style.transform = `rotate(${item.rotation}deg)`;
+      sfx.playPop(850, 0.03);
+      triggerAutoSave();
+    });
+  }
+
+  const btnRotReset = el.querySelector('.btn-rot-reset');
+  if (btnRotReset) {
+    btnRotReset.addEventListener('click', (e) => {
+      e.stopPropagation();
+      item.rotation = 0;
+      el.style.transform = `rotate(0deg)`;
+      sfx.playPop(900, 0.03);
+      triggerAutoSave();
+      showToast('Sudut diluruskan ke 0°');
+    });
+  }
+
+  const btnToggleStyle = el.querySelector('.btn-toggle-style');
+  if (btnToggleStyle) {
+    btnToggleStyle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const styles = ['polaroid', 'cutout', 'pin', 'clean'];
+      const curIdx = styles.indexOf(item.style || 'polaroid');
+      item.style = styles[(curIdx + 1) % styles.length];
+      renderScrapbookStage(note);
+      sfx.playPop(1050, 0.03);
+      triggerAutoSave();
+    });
+  }
+
+  const btnDel = el.querySelector('.btn-del-sticker');
+  if (btnDel) {
+    btnDel.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const idx = note.stickers.findIndex(s => s.id === item.id);
+      if (idx !== -1) {
+        note.stickers.splice(idx, 1);
+        renderScrapbookStage(note);
+        sfx.playPop(500, 0.05);
+        triggerAutoSave();
+        showToast('Stiker / Foto dihapus 🗑️');
+      }
+    });
+  }
+
+  // 3. RESIZE KNOB
+  const resizeKnob = el.querySelector('.sticker-resize-knob');
+  if (resizeKnob) {
+    resizeKnob.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      selectSticker(el);
+      resizeKnob.setPointerCapture(e.pointerId);
+
+      const startX = e.clientX;
+      const initialWidth = item.width || 120;
+
+      const onMove = (moveEvt) => {
+        const deltaX = moveEvt.clientX - startX;
+        const newW = Math.max(60, Math.min(450, initialWidth + deltaX));
+        item.width = Math.round(newW);
+        const img = el.querySelector('img');
+        if (img) img.style.width = `${item.width}px`;
+      };
+
+      const onUp = () => {
+        resizeKnob.releasePointerCapture(e.pointerId);
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+        triggerAutoSave();
+      };
+
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    });
+  }
+
+  // 4. DRAG STICKER TO MOVE POSITION
+  el.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.sticker-rotate-knob') || e.target.closest('.sticker-action-bar') || e.target.closest('.sticker-resize-knob')) {
+      return;
+    }
+    e.stopPropagation();
+    selectSticker(el);
+
+    // Bring sticker to top
+    const maxZ = Math.max(...(note.stickers.map(s => s.zIndex || 10)), 10) + 1;
+    item.zIndex = maxZ;
+    el.style.zIndex = maxZ;
+
+    el.setPointerCapture(e.pointerId);
+    el.classList.add('is-dragging');
+
+    const startClientX = e.clientX;
+    const startClientY = e.clientY;
+    const startX = item.x || 0;
+    const startY = item.y || 0;
+
+    const onMove = (moveEvt) => {
+      const deltaX = moveEvt.clientX - startClientX;
+      const deltaY = moveEvt.clientY - startClientY;
+      const rawX = Math.round(startX + deltaX);
+      const rawY = Math.round(startY + deltaY);
+
+      // Clamp inside the book canvas so stickers/photos never leave the book
+      const canvasW = editorDocCanvas ? editorDocCanvas.offsetWidth : 900;
+      const canvasH = editorDocCanvas ? editorDocCanvas.offsetHeight : 1200;
+      const itemW = item.width || el.offsetWidth || 120;
+      const itemH = el.offsetHeight || 120;
+
+      item.x = Math.max(12, Math.min(canvasW - itemW - 12, rawX));
+      item.y = Math.max(12, Math.min(canvasH - itemH - 12, rawY));
+
+      el.style.left = `${item.x}px`;
+      el.style.top = `${item.y}px`;
+    };
+
+    const onUp = () => {
+      el.classList.remove('is-dragging');
+      el.releasePointerCapture(e.pointerId);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      triggerAutoSave();
+    };
+
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  });
+}
+
+// =============================================================================
 // 8. EDITOR INTERACTION & PROGRESS RING
 // =============================================================================
 
@@ -784,6 +1330,7 @@ function renderEditor() {
     noteDateMeta.textContent = '—';
     noteWordsMeta.textContent = '0 kata';
     btnPinNote.classList.remove('active');
+    if (scrapbookStage) scrapbookStage.innerHTML = '';
     return;
   }
 
@@ -800,6 +1347,18 @@ function renderEditor() {
     btnPinNote.classList.remove('active');
     btnPinNote.title = 'Sematkan Catatan';
   }
+
+  // Apply Book Costume (Cover, Paper Pattern, Ribbon)
+  if (!note.bookStyle) {
+    note.bookStyle = { cover: 'spiral', paper: 'lined', ribbon: 'caramel' };
+  }
+  applyBookCostume(note.bookStyle);
+
+  // Render Draggable & Rotatable Stickers / Photos
+  if (!note.stickers) {
+    note.stickers = [];
+  }
+  renderScrapbookStage(note);
 
   renderChecklist(note);
 }
@@ -880,6 +1439,8 @@ function renderChecklist(note) {
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'check-item-input';
+    input.spellcheck = false;
+    input.autocomplete = 'off';
     input.value = item.text;
     input.placeholder = 'Tugas... (Enter untuk baris baru)';
 
@@ -1096,6 +1657,12 @@ function createNewNote() {
     folder: targetFolder,
     pinned: false,
     checklist: [],
+    bookStyle: {
+      cover: 'spiral',
+      paper: 'lined',
+      ribbon: 'caramel'
+    },
+    stickers: [],
     createdAt: now,
     updatedAt: now
   };
@@ -1114,6 +1681,9 @@ function createNewNote() {
   renderSidebar();
   renderNotesList();
   renderEditor();
+
+  // Buka catatan secara penuh (Full Book Mode) layaknya buku asli!
+  enterFullBookMode();
 
   if (window.innerWidth <= 680) {
     splitView.classList.add('view-editor');
@@ -1417,6 +1987,497 @@ if (btnSaveNote) {
   btnSaveNote.addEventListener('click', saveCurrentNoteImmediately);
 }
 
+// -----------------------------------------------------------------------------
+// EVENT LISTENERS: STABILO, KOSTUM BUKU, STIKER & FOTO
+// -----------------------------------------------------------------------------
+function setupStabiloEvents() {
+  if (btnStabiloToggle && stabiloPalette) {
+    btnStabiloToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      stabiloPalette.classList.toggle('open');
+      sfx.playPop(900, 0.03);
+    });
+
+    stabiloPalette.addEventListener('click', (e) => {
+      const swatch = e.target.closest('.swatch-btn');
+      if (swatch) {
+        e.stopPropagation();
+        const color = swatch.dataset.color;
+        stabiloPalette.querySelectorAll('.swatch-btn').forEach(b => b.classList.remove('active'));
+        swatch.classList.add('active');
+        applyStabiloHighlight(color);
+        stabiloPalette.classList.remove('open');
+        return;
+      }
+
+      if (e.target.closest('.btn-clear-stabilo')) {
+        e.stopPropagation();
+        clearStabiloHighlight();
+        stabiloPalette.classList.remove('open');
+        return;
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.stabilo-tool-wrap')) {
+        stabiloPalette.classList.remove('open');
+      }
+    });
+  }
+}
+
+function updateSplitViewDrawerState() {
+  const isAnyOpen = (bookModal && bookModal.classList.contains('open')) ||
+                    (photoDrawer && photoDrawer.classList.contains('open')) ||
+                    (stickerDrawer && stickerDrawer.classList.contains('open'));
+  if (splitView) {
+    splitView.classList.toggle('drawer-open', isAnyOpen);
+  }
+}
+
+function closeAllDrawers() {
+  closeBookDrawer();
+  closePhotoDrawer();
+  closeStickerDrawer();
+}
+
+function openBookDrawer() {
+  closePhotoDrawer();
+  closeStickerDrawer();
+
+  const note = state.getActiveNote();
+  if (!note) return;
+  if (!note.bookStyle) {
+    note.bookStyle = { cover: 'spiral', paper: 'lined', ribbon: 'caramel' };
+  }
+
+  if (bookCoverGrid) {
+    bookCoverGrid.querySelectorAll('.costume-card').forEach(card => {
+      card.classList.toggle('active', card.dataset.cover === note.bookStyle.cover);
+    });
+  }
+  if (paperPatternGrid) {
+    paperPatternGrid.querySelectorAll('.costume-card').forEach(card => {
+      card.classList.toggle('active', card.dataset.paper === note.bookStyle.paper);
+    });
+  }
+  if (bookRibbonChoices) {
+    bookRibbonChoices.querySelectorAll('.ribbon-choice-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.ribbon === note.bookStyle.ribbon);
+    });
+  }
+
+  if (bookModal) bookModal.classList.add('open');
+  if (btnOpenBookModal) btnOpenBookModal.classList.add('active');
+  updateSplitViewDrawerState();
+  sfx.playPop(900, 0.03);
+}
+
+function closeBookDrawer() {
+  if (bookModal) bookModal.classList.remove('open');
+  if (btnOpenBookModal) btnOpenBookModal.classList.remove('active');
+  updateSplitViewDrawerState();
+}
+
+function openPhotoDrawer() {
+  closeBookDrawer();
+  closeStickerDrawer();
+
+  if (photoDrawer) photoDrawer.classList.add('open');
+  if (btnOpenPhotoDrawer) btnOpenPhotoDrawer.classList.add('active');
+  updateSplitViewDrawerState();
+  sfx.playPop(900, 0.03);
+}
+
+function closePhotoDrawer() {
+  if (photoDrawer) photoDrawer.classList.remove('open');
+  if (btnOpenPhotoDrawer) btnOpenPhotoDrawer.classList.remove('active');
+  updateSplitViewDrawerState();
+}
+
+function openStickerDrawer() {
+  closeBookDrawer();
+  closePhotoDrawer();
+
+  if (stickerDrawer) stickerDrawer.classList.add('open');
+  if (btnOpenStickerDrawer) btnOpenStickerDrawer.classList.add('active');
+  updateSplitViewDrawerState();
+  sfx.playPop(900, 0.03);
+}
+
+function closeStickerDrawer() {
+  if (stickerDrawer) stickerDrawer.classList.remove('open');
+  if (btnOpenStickerDrawer) btnOpenStickerDrawer.classList.remove('active');
+  updateSplitViewDrawerState();
+}
+
+function setupBookCostumeEvents() {
+  if (btnOpenBookModal) {
+    btnOpenBookModal.addEventListener('click', () => {
+      if (bookModal && bookModal.classList.contains('open')) {
+        closeBookDrawer();
+        sfx.playPop(700, 0.03);
+      } else {
+        openBookDrawer();
+      }
+    });
+  }
+
+  if (btnBookModalClose) {
+    btnBookModalClose.addEventListener('click', () => {
+      closeBookDrawer();
+      sfx.playPop(700, 0.03);
+    });
+  }
+
+  if (bookCoverGrid) {
+    bookCoverGrid.addEventListener('click', (e) => {
+      const card = e.target.closest('.costume-card');
+      if (!card) return;
+      const cover = card.dataset.cover;
+      bookCoverGrid.querySelectorAll('.costume-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+
+      const note = state.getActiveNote();
+      if (note) {
+        note.bookStyle = note.bookStyle || {};
+        note.bookStyle.cover = cover;
+        applyBookCostume(note.bookStyle);
+        triggerAutoSave();
+        sfx.playPop(950, 0.03);
+      }
+    });
+  }
+
+  if (paperPatternGrid) {
+    paperPatternGrid.addEventListener('click', (e) => {
+      const card = e.target.closest('.costume-card');
+      if (!card) return;
+      const paper = card.dataset.paper;
+      paperPatternGrid.querySelectorAll('.costume-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+
+      const note = state.getActiveNote();
+      if (note) {
+        note.bookStyle = note.bookStyle || {};
+        note.bookStyle.paper = paper;
+        applyBookCostume(note.bookStyle);
+        triggerAutoSave();
+        sfx.playPop(950, 0.03);
+      }
+    });
+  }
+
+  if (bookRibbonChoices) {
+    bookRibbonChoices.addEventListener('click', (e) => {
+      const btn = e.target.closest('.ribbon-choice-btn');
+      if (!btn) return;
+      const ribbon = btn.dataset.ribbon;
+      bookRibbonChoices.querySelectorAll('.ribbon-choice-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const note = state.getActiveNote();
+      if (note) {
+        note.bookStyle = note.bookStyle || {};
+        note.bookStyle.ribbon = ribbon;
+        applyBookCostume(note.bookStyle);
+        triggerAutoSave();
+        sfx.playPop(950, 0.03);
+      }
+    });
+  }
+
+  if (btnSaveBookCostume) {
+    btnSaveBookCostume.addEventListener('click', () => {
+      closeBookDrawer();
+      sfx.playCheck();
+      showToast('Kostum buku diterapkan! 📔✨');
+    });
+  }
+}
+
+// -----------------------------------------------------------------------------
+// EVENT LISTENERS: FOTO & GAMBAR DRAWER (BUKA KE SAMPING, TANPA BLUR)
+// -----------------------------------------------------------------------------
+let currentUploadDataUrl = '';
+let selectedPhotoStyle = 'polaroid';
+
+function setupPhotoDrawerEvents() {
+  if (btnOpenPhotoDrawer) {
+    btnOpenPhotoDrawer.addEventListener('click', () => {
+      if (photoDrawer && photoDrawer.classList.contains('open')) {
+        closePhotoDrawer();
+        sfx.playPop(700, 0.03);
+      } else {
+        openPhotoDrawer();
+      }
+    });
+  }
+
+  if (btnPhotoDrawerClose) {
+    btnPhotoDrawerClose.addEventListener('click', () => {
+      closePhotoDrawer();
+      sfx.playPop(700, 0.03);
+    });
+  }
+
+  if (imageDropzone && imageFileInput) {
+    imageDropzone.addEventListener('click', () => {
+      imageFileInput.click();
+    });
+
+    imageDropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      imageDropzone.style.borderColor = 'var(--accent-gold)';
+    });
+
+    imageDropzone.addEventListener('dragleave', () => {
+      imageDropzone.style.borderColor = '';
+    });
+
+    imageDropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      imageDropzone.style.borderColor = '';
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleImageFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    imageFileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleImageFile(e.target.files[0]);
+      }
+    });
+  }
+
+  function handleImageFile(file) {
+    if (!file.type.startsWith('image/')) {
+      showToast('Pilih file gambar (JPG, PNG, GIF, WebP)');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      currentUploadDataUrl = e.target.result;
+      showUploadPreview(currentUploadDataUrl);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  if (btnLoadImageUrl && imageUrlInput) {
+    btnLoadImageUrl.addEventListener('click', () => {
+      const url = imageUrlInput.value.trim();
+      if (!url) return;
+      currentUploadDataUrl = url;
+      showUploadPreview(url);
+    });
+  }
+
+  function showUploadPreview(src) {
+    if (uploadPreviewImg) uploadPreviewImg.src = src;
+    if (uploadPreviewArea) uploadPreviewArea.style.display = 'flex';
+    if (btnConfirmAddImage) btnConfirmAddImage.disabled = false;
+    sfx.playPop(1050, 0.03);
+  }
+
+  if (imageCaptionInput && previewCaptionText) {
+    imageCaptionInput.addEventListener('input', (e) => {
+      previewCaptionText.textContent = e.target.value.trim() || 'Catatan Kenangan ✨';
+    });
+  }
+
+  if (photoStyleSelector) {
+    photoStyleSelector.addEventListener('click', (e) => {
+      const btn = e.target.closest('.style-choice-btn');
+      if (!btn) return;
+      selectedPhotoStyle = btn.dataset.style;
+      photoStyleSelector.querySelectorAll('.style-choice-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      sfx.playPop(900, 0.02);
+    });
+  }
+
+  if (btnConfirmAddImage) {
+    btnConfirmAddImage.addEventListener('click', () => {
+      if (!currentUploadDataUrl) return;
+      const note = state.getActiveNote();
+      if (!note) return;
+      note.stickers = note.stickers || [];
+
+      const newPhoto = {
+        id: 'img_' + Date.now(),
+        title: 'Foto Scrapbook',
+        caption: (imageCaptionInput?.value || '').trim(),
+        src: currentUploadDataUrl,
+        style: selectedPhotoStyle || 'polaroid',
+        x: 220 + Math.floor(Math.random() * 60),
+        y: 360 + Math.floor(Math.random() * 60),
+        width: 150,
+        rotation: Math.floor(Math.random() * 16) - 8,
+        zIndex: (note.stickers.length || 0) + 10
+      };
+
+      note.stickers.push(newPhoto);
+      renderScrapbookStage(note);
+      triggerAutoSave();
+      sfx.playCheck();
+
+      closePhotoDrawer();
+      currentUploadDataUrl = '';
+      if (imageFileInput) imageFileInput.value = '';
+      if (imageUrlInput) imageUrlInput.value = '';
+      if (imageCaptionInput) imageCaptionInput.value = '';
+      if (uploadPreviewArea) uploadPreviewArea.style.display = 'none';
+      if (btnConfirmAddImage) btnConfirmAddImage.disabled = true;
+
+      showToast('Foto berhasil ditempel ke buku catatan! 📸✨');
+    });
+  }
+}
+
+// -----------------------------------------------------------------------------
+// EVENT LISTENERS: STIKER DRAWER (BUKA KE SAMPING, TANPA BLUR, LIVE INTERACTION)
+// -----------------------------------------------------------------------------
+function setupStickerDrawerEvents() {
+  if (stickersGrid && stickersGrid.children.length === 0) {
+    CUTE_STICKERS.forEach(item => {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'sticker-pick-card';
+      card.innerHTML = `
+        <div class="sticker-pick-icon">${item.svg}</div>
+        <div class="sticker-pick-name">${escapeHtml(item.name)}</div>
+      `;
+      card.addEventListener('click', () => {
+        const note = state.getActiveNote();
+        if (!note) return;
+        note.stickers = note.stickers || [];
+
+        const canvasWidth = editorDocCanvas ? editorDocCanvas.offsetWidth : 800;
+        const targetX = Math.max(160, Math.min(canvasWidth - 140, 680));
+
+        const newSticker = {
+          id: 'stk_' + Date.now(),
+          title: item.name,
+          src: svgToDataUrl(item.svg),
+          style: 'cutout',
+          x: targetX,
+          y: 280 + Math.floor(Math.random() * 140),
+          width: 90,
+          rotation: Math.floor(Math.random() * 20) - 10,
+          zIndex: (note.stickers.length || 0) + 10
+        };
+
+        note.stickers.push(newSticker);
+        renderScrapbookStage(note);
+        triggerAutoSave();
+        sfx.playCheck();
+        // User langsung melihat stiker menempel di buku tanpa tertutup modal!
+        showToast(`Stiker ${item.name} berhasil ditempel! ✨`);
+      });
+      stickersGrid.appendChild(card);
+    });
+  }
+
+  if (btnOpenStickerDrawer) {
+    btnOpenStickerDrawer.addEventListener('click', () => {
+      if (stickerDrawer && stickerDrawer.classList.contains('open')) {
+        closeStickerDrawer();
+        sfx.playPop(700, 0.03);
+      } else {
+        openStickerDrawer();
+      }
+    });
+  }
+
+  if (btnStickerDrawerClose) {
+    btnStickerDrawerClose.addEventListener('click', () => {
+      closeStickerDrawer();
+      sfx.playPop(700, 0.03);
+    });
+  }
+
+  if (btnStickerDrawerDone) {
+    btnStickerDrawerDone.addEventListener('click', () => {
+      closeStickerDrawer();
+      sfx.playCheck();
+      showToast('Stiker selesai dipasang! ✨');
+    });
+  }
+}
+
+// -----------------------------------------------------------------------------
+// EVENT LISTENERS: FULL BOOK MODE & PANEL TOGGLE (KAYA BUKU BENERAN)
+// -----------------------------------------------------------------------------
+function enterFullBookMode() {
+  if (splitView) {
+    splitView.classList.add('full-book-mode');
+    splitView.classList.remove('sidebar-collapsed');
+    splitView.classList.remove('panels-collapsed');
+  }
+  if (btnBookBack) {
+    btnBookBack.classList.remove('list-open');
+    const label = btnBookBack.querySelector('#btnBookBackLabel');
+    if (label) label.textContent = 'Semua Catatan';
+  }
+  if (btnTogglePanels) {
+    btnTogglePanels.classList.add('active');
+  }
+}
+
+function exitFullBookMode() {
+  if (splitView) {
+    splitView.classList.remove('full-book-mode');
+    splitView.classList.add('sidebar-collapsed'); // Shows notes panel, keeps sidebar collapsed for clean view
+  }
+  if (btnBookBack) {
+    btnBookBack.classList.add('list-open');
+    const label = btnBookBack.querySelector('#btnBookBackLabel');
+    if (label) label.textContent = '✕ Tutup Daftar';
+  }
+}
+
+function toggleFullBookMode() {
+  if (splitView && splitView.classList.contains('full-book-mode')) {
+    exitFullBookMode();
+    sfx.playPop(850, 0.03);
+    showToast('Daftar catatan dibuka 📋');
+  } else {
+    enterFullBookMode();
+    sfx.playPop(950, 0.03);
+    showToast('Mode Buku Penuh: Tulis layaknya buku asli! 📖✨');
+  }
+}
+
+function setupPanelToggleEvents() {
+  if (btnBookBack) {
+    btnBookBack.addEventListener('click', () => {
+      toggleFullBookMode();
+    });
+  }
+
+  if (btnTogglePanels) {
+    btnTogglePanels.addEventListener('click', () => {
+      sfx.playPop(800, 0.03);
+      if (splitView.classList.contains('full-book-mode')) {
+        exitFullBookMode();
+        showToast('Daftar catatan ditampilkan 📋');
+      } else {
+        enterFullBookMode();
+        showToast('Mode Buku Penuh Aktif 📖✨');
+      }
+    });
+  }
+}
+
+// Deselect stickers when clicking outside
+if (editorContentWrap) {
+  editorContentWrap.addEventListener('pointerdown', (e) => {
+    if (!e.target.closest('.scrapbook-item')) {
+      deselectAllStickers();
+    }
+  });
+}
+
 // Keyboard Shortcuts
 window.addEventListener('keydown', (e) => {
   // Ctrl+S or Cmd+S: Save Note
@@ -1426,12 +2487,14 @@ window.addEventListener('keydown', (e) => {
     return;
   }
 
-  // Esc: Exit Zen mode or close modals
+  // Esc: Exit Zen mode or close modals & side drawers
   if (e.key === 'Escape') {
     if (state.isZenMode) {
       toggleZenMode();
       return;
     }
+    deselectAllStickers();
+    closeAllDrawers();
     exportModal.classList.remove('open');
     confirmModal.classList.remove('open');
     folderModal.classList.remove('open');
@@ -1452,11 +2515,132 @@ window.addEventListener('keydown', (e) => {
 });
 
 // =============================================================================
+// FIGMA-STYLE CANVAS PANNING & GESTURE NAVIGATION (BEBAS GESER KANAN KIRI ATAS BAWAH)
+// =============================================================================
+let isHandToolActive = false;
+let isPanning = false;
+let panStartX = 0;
+let panStartY = 0;
+let scrollStartLeft = 0;
+let scrollStartTop = 0;
+let isSpacePressed = false;
+
+function setupFigmaCanvasPanning() {
+  const wrap = editorContentWrap;
+  if (!wrap) return;
+
+  const btnHand = document.getElementById('btnToggleHandTool');
+  if (btnHand) {
+    btnHand.addEventListener('click', () => {
+      isHandToolActive = !isHandToolActive;
+      btnHand.classList.toggle('active', isHandToolActive);
+      wrap.classList.toggle('hand-tool-active', isHandToolActive);
+      sfx.playPop(isHandToolActive ? 750 : 600, 0.03);
+      showToast(isHandToolActive ? '🖐️ Mode Geser Aktif: Klik & geser kanvas bebas ke mana saja!' : '✏️ Mode Tulis Aktif');
+    });
+  }
+
+  // Spacebar toggle to pan like Figma
+  window.addEventListener('keydown', (e) => {
+    const isEditingText = document.activeElement && (
+      document.activeElement.isContentEditable || 
+      document.activeElement.tagName === 'INPUT' || 
+      document.activeElement.tagName === 'TEXTAREA'
+    );
+
+    if (e.code === 'Space' && !isSpacePressed && !isEditingText) {
+      isSpacePressed = true;
+      wrap.classList.add('hand-tool-active');
+    }
+    // H shortcut for Hand Tool, V for Select tool (standard Figma shortcuts)
+    if (!isEditingText && (e.key === 'h' || e.key === 'H') && !e.ctrlKey && !e.metaKey) {
+      if (btnHand) btnHand.click();
+    }
+    if (!isEditingText && (e.key === 'v' || e.key === 'V') && !e.ctrlKey && !e.metaKey && isHandToolActive) {
+      if (btnHand) btnHand.click();
+    }
+  });
+
+  window.addEventListener('keyup', (e) => {
+    if (e.code === 'Space') {
+      isSpacePressed = false;
+      if (!isHandToolActive) {
+        wrap.classList.remove('hand-tool-active');
+      }
+    }
+  });
+
+  // Start panning on pointerdown
+  wrap.addEventListener('pointerdown', (e) => {
+    const isMiddleClick = e.button === 1;
+    const isPanMode = isHandToolActive || isSpacePressed || isMiddleClick;
+    const isTargetInteractive = e.target.closest('input, textarea, [contenteditable="true"], button, select, .scrapbook-item, .apple-checkbox');
+
+    // Pan if: hand tool active, space held, middle click, OR dragged on empty paper background!
+    if (isPanMode || (!isTargetInteractive && e.button === 0)) {
+      if (isTargetInteractive && !isPanMode) return;
+
+      isPanning = true;
+      panStartX = e.clientX;
+      panStartY = e.clientY;
+      scrollStartLeft = wrap.scrollLeft;
+      scrollStartTop = wrap.scrollTop;
+
+      wrap.classList.add('is-panning');
+      try {
+        wrap.setPointerCapture(e.pointerId);
+      } catch {}
+
+      e.preventDefault();
+    }
+  });
+
+  // Move while panning
+  wrap.addEventListener('pointermove', (e) => {
+    if (!isPanning) return;
+    const dx = e.clientX - panStartX;
+    const dy = e.clientY - panStartY;
+
+    wrap.scrollLeft = scrollStartLeft - dx;
+    wrap.scrollTop = scrollStartTop - dy;
+  });
+
+  // Stop panning
+  const stopPan = () => {
+    if (isPanning) {
+      isPanning = false;
+      wrap.classList.remove('is-panning');
+      try {
+        wrap.releasePointerCapture(e.pointerId);
+      } catch {}
+    }
+  };
+
+  wrap.addEventListener('pointerup', stopPan);
+  wrap.addEventListener('pointercancel', stopPan);
+
+  // Wheel horizontal scroll with Shift or natural trackpad
+  wrap.addEventListener('wheel', (e) => {
+    if (e.shiftKey && e.deltaY !== 0) {
+      wrap.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }
+  }, { passive: false });
+}
+
+// =============================================================================
 // 11. INITIALIZATION
 // =============================================================================
 applyTheme(state.theme);
 applyFlavor(state.flavor);
 soundLabel.textContent = sfx.enabled ? 'Suara: Nyala' : 'Suara: Mati';
+setupStabiloEvents();
+setupBookCostumeEvents();
+setupPhotoDrawerEvents();
+setupStickerDrawerEvents();
+setupPanelToggleEvents();
+setupFigmaCanvasPanning();
 renderSidebar();
 renderNotesList();
 renderEditor();
+enterFullBookMode();
